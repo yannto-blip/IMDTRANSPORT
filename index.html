@@ -2,81 +2,95 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Transport engins BTP Île-de-France | IMD Transport</title>
-
-<meta name="description" content="Transport d'engins de chantier, pelleteuse, échafaudage et matériel BTP en Île-de-France. Intervention rapide. Contact WhatsApp immédiat.">
+<title>IMD Transport</title>
 
 <style>
+
 body {
   margin:0;
-  font-family: Arial, sans-serif;
+  font-family:Arial;
 }
 
+/* HERO */
 .hero {
-  position: relative;
-  height: 90vh;
-  background: url('camion.jpg') center/cover no-repeat;
+  position:relative;
+  height:100vh;
+  background:url("camion.jpg") center/cover no-repeat;
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   text-align:center;
   color:white;
 }
 
 .overlay {
   position:absolute;
-  top:0;
-  left:0;
   width:100%;
   height:100%;
-  background:rgba(0,0,0,0.65);
+  background:rgba(0,0,0,0.5);
 }
 
+/* CONTENU */
 .hero-content {
   position:relative;
   z-index:2;
-  padding:20px;
 }
 
+/* LOGO ROND */
 .logo {
-  width:220px;
-  margin-bottom:20px;
+  position:absolute;
+  top:20px;
+  left:20px;
+  width:80px;
+  height:80px;
+  object-fit:cover;
+  border-radius:50%;
+  border:3px solid white;
+  background:white;
+  padding:5px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.4);
 }
 
+/* TITRE */
+h1 {
+  font-size:32px;
+  margin-bottom:10px;
+}
+
+/* BOUTON */
 .btn {
-  margin-top:20px;
+  display:inline-block;
   padding:15px 25px;
   background:#25D366;
   color:white;
   text-decoration:none;
-  font-size:18px;
   border-radius:5px;
-  display:inline-block;
+  font-weight:bold;
 }
 
+/* SECTION */
 .section {
   padding:40px;
+  text-align:center;
 }
 
 .services li {
   margin-bottom:10px;
 }
 
-.footer {
+/* FOOTER */
+footer {
   background:#111;
   color:white;
   padding:20px;
   text-align:center;
 }
-</style>
 
+</style>
 </head>
 
 <body>
 
-<!-- HERO -->
 <div class="hero">
   <div class="overlay"></div>
 
@@ -87,61 +101,27 @@ body {
     <p>Île-de-France – Intervention rapide</p>
 
     <a class="btn" href="https://wa.me/33688494533?text=Bonjour%20je%20souhaite%20un%20transport">
-      📲 Contacter sur WhatsApp
+      Contacter sur WhatsApp
     </a>
   </div>
 </div>
 
-<!-- SERVICES -->
 <div class="section">
   <h2>Nos prestations</h2>
   <ul class="services">
-    <li>Transport de pelleteuse et engins de chantier</li>
+    <li>Transport d’engins de chantier</li>
+    <li>Transport pelleteuse</li>
     <li>Transport échafaudage</li>
-    <li>Transport matériel BTP</li>
     <li>Transport big bag</li>
-    <li>Transport sur plateau porte-char</li>
+    <li>Transport plateau porte-char</li>
   </ul>
 </div>
 
-<!-- ZONE -->
-<div class="section" style="background:#f5f5f5;">
-  <h2>Zone d’intervention</h2>
-  <p>Intervention dans toute l’Île-de-France :</p>
-  <p>Paris, Seine-et-Marne (77), Yvelines (78), Essonne (91), Hauts-de-Seine (92), Seine-Saint-Denis (93), Val-de-Marne (94), Val-d’Oise (95)</p>
-</div>
-
-<!-- CTA WHATSAPP -->
-<div class="section" style="text-align:center;">
-  <h2>Besoin d’un transport rapide ?</h2>
-  <p>Réponse rapide garantie</p>
-
-  <a class="btn" href="https://wa.me/33688494533?text=Bonjour%20je%20souhaite%20un%20transport">
-    📲 Contact immédiat sur WhatsApp
-  </a>
-</div>
-
-<!-- FORMULAIRE -->
-<div class="section">
-  <h2>Demande rapide</h2>
-
-  <iframe 
-    src="https://tally.so/r/81PVRk"
-    width="100%" 
-    height="600px" 
-    frameborder="0">
-  </iframe>
-
-</div>
-
-<!-- FOOTER -->
-<div class="footer">
-  <p><strong>IMD Transport</strong></p>
-  <p>SIRET : 978360477</p>
-  <p>TVA : FR56978360477</p>
-  <p>Email : imdtransport92@gmail.com</p>
-  <p>Transport engins BTP Île-de-France – Transport matériel chantier – Transport plateau</p>
-</div>
+<footer>
+  IMD Transport<br>
+  SIRET : 978360477<br>
+  Email : imdtransport92@gmail.com
+</footer>
 
 </body>
 </html>
