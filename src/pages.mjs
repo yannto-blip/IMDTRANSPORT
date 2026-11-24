@@ -1,6 +1,6 @@
 // Contenu des pages. Chaque page : path, title, description, h1, crumbs, service, faq, body().
 // Pour modifier un texte : éditer ce fichier puis lancer `node build.mjs`.
-import { site, esc, ctaPair, mailLink, photo, quoteForm, plateSchema, idfMap, breadcrumb, ICON, SERVICES_NAV } from './layout.mjs';
+import { site, esc, ctaPair, mailLink, photo, quoteForm, plateSchema, idfMap, breadcrumb, ICON, PICTO, SERVICES_NAV } from './layout.mjs';
 
 const S = site.specs;
 const DEPS = site.departments;
@@ -18,6 +18,7 @@ export const FAQ = {
   assurance: { q: 'Les marchandises sont-elles assurées ?', a: 'Oui, les marchandises transportées sont assurées selon les conditions et limites de notre contrat d\'assurance transport.' },
   regulier: { q: 'Proposez-vous des transports réguliers pour les professionnels ?', a: 'Oui. Nous adaptons l\'organisation de nos tournées aux besoins récurrents de nos clients : loueurs de matériel, entreprises du BTP, artisans.' },
   france: { q: 'Intervenez-vous en dehors de l\'Île-de-France ?', a: 'Oui, des transports ponctuels dans toute la France métropolitaine peuvent être étudiés sur demande.' },
+  securite: { q: 'Quelle importance IMD Transport accorde-t-elle à la sécurité ?', a: 'La sécurité est notre priorité. Nos chauffeurs sont régulièrement sensibilisés aux risques liés au transport, aux opérations de chargement et de déchargement et aux interventions sur chantier. Chaque chargement est sécurisé et arrimé avant le départ, dans le respect des consignes de sécurité du chantier et des temps de conduite et de repos.' },
   devis: { q: 'Comment obtenir un devis ?', a: 'Contactez-nous directement par téléphone ou WhatsApp en précisant le matériel, les lieux de départ et de livraison ainsi que la date souhaitée. Vous pouvez joindre des photos ou la fiche technique de l\'engin.' }
 };
 const ALL_FAQ = Object.values(FAQ);
@@ -81,6 +82,38 @@ const related = (exclude) => `
   </div>
 </section>`;
 
+// ---------- Sécurité ----------
+const SAFETY = [
+  ['people', 'Sensibilisation régulière des chauffeurs', 'Risques du transport, du chargement, du déchargement et des interventions sur chantier.'],
+  ['strap', 'Sécurisation et arrimage des chargements', 'Chaque engin ou matériel est calé et arrimé sur le plateau avant le départ.'],
+  ['helmet', 'Respect des consignes de chantier', 'Nos chauffeurs appliquent les règles de sécurité propres à chaque site.'],
+  ['clock', 'Temps de conduite et de repos', 'Une organisation des tournées qui respecte la réglementation.'],
+  ['wrench', 'Véhicules et équipements surveillés', 'Vigilance sur l\'état des camions, des rampes, du treuil et des moyens d\'arrimage.'],
+  ['alert', 'Prévention des risques professionnels', 'Anticiper les risques pour protéger nos équipes, vos équipes et votre matériel.']
+];
+const safetySection = () => `
+<section class="section safety" id="securite" aria-labelledby="safety-t">
+  <div class="wrap">
+    <div class="safety-head">
+      <div>
+        <p class="kicker kicker-light">Sécurité</p>
+        <h2 id="safety-t" class="h2">La sécurité n'est pas une option. C'est notre priorité.</h2>
+      </div>
+      <p class="safety-lead">Chez IMD Transport, la sécurité fait partie intégrante de notre métier. Nos chauffeurs sont régulièrement sensibilisés aux risques liés au transport, aux opérations de chargement et de déchargement ainsi qu'aux interventions sur chantier.</p>
+    </div>
+    <ul class="safety-grid">
+      ${SAFETY.map(([ic, t, d]) => `<li><span class="safety-ic">${PICTO[ic]}</span><h3 class="h4">${t}</h3><p>${d}</p></li>`).join('')}
+    </ul>
+    <p class="safety-sign">Chaque transport. Chaque chantier. La même exigence.</p>
+  </div>
+</section>`;
+const reassure = () => `
+<ul class="reassure" aria-label="Nos engagements">
+  <li>${PICTO.shield}<span>Sécurité prioritaire</span></li>
+  <li>${PICTO.truck}<span>Flotte en propre</span></li>
+  <li>${PICTO.check}<span>Marchandises assurées</span></li>
+</ul>`;
+
 const crumbs = (...items) => [{ name: 'Accueil', path: '/' }, ...items];
 
 // ---------- Cartes prestations (accueil) ----------
@@ -119,6 +152,7 @@ export const pages = [
       <p class="lead">Transport d'engins, de matériel BTP et de véhicules sur camion plateau en Île-de-France, avec nos camions et nos chauffeurs.</p>
       ${ctaPair('hero', 'general', { size: 'btn-lg' })}
       <a class="link-arrow quote-link" href="#devis">Pas le temps d'appeler ? Demandez un devis par formulaire ${ICON.arrow}</a>
+      ${reassure()}
     </div>
     <div class="hero-media">${photo('hero', { eager: true, cls: 'hero-photo', sizes: '(min-width: 1000px) 560px, 100vw' })}</div>
   </div>
@@ -168,6 +202,8 @@ export const pages = [
     ${plateSchema()}
   </div>
 </section>
+
+${safetySection()}
 
 <section class="section why" aria-labelledby="why-t">
   <div class="wrap">
@@ -239,7 +275,7 @@ ${pageHero(p, 'minipelle', 'Transferts d\'engins entre dépôts, agences de loca
       <ol class="steps">
         <li><b>Vous nous décrivez l'engin</b> : modèle, poids, dimensions, adresses et date. Une photo ou la fiche technique suffit souvent.</li>
         <li><b>Nous vérifions la faisabilité</b> : poids, gabarit, accès au site de chargement et de livraison.</li>
-        <li><b>Nos chauffeurs chargent et arriment</b> l'engin par les rampes ou au treuil.</li>
+        <li><b>Nos chauffeurs chargent et arriment</b> l'engin par les rampes ou au treuil, en sécurisant le chargement avant le départ.</li>
         <li><b>Livraison sur le lieu convenu</b>, de jour comme de nuit selon disponibilités.</li>
       </ol>
       <h3 class="h3" id="compacteurs-detail">Transport de compacteur et de rouleau compresseur</h3>
@@ -406,10 +442,10 @@ ${contactBlock(p.service, 'contact_page', 'Un véhicule à transporter ?')}`
   {
     path: '/transport-professionnels', heroImg: 'pros', file: 'transport-professionnels.html',
     title: 'Transport régulier de matériel BTP pour professionnels | IMD Transport',
-    description: 'Solutions de transport pour loueurs de matériel, entreprises du BTP, artisans et gestionnaires de flottes : tournées, transferts entre chantiers, besoins réguliers.',
+    description: 'Transport régulier et sécurisé pour loueurs de matériel, entreprises du BTP et des travaux publics : tournées, transferts entre chantiers, arrimage maîtrisé.',
     h1: 'Solutions de transport pour les professionnels',
     crumbs: crumbs({ name: 'Professionnels', path: '/transport-professionnels' }),
-    service: 'pros', serviceName: 'Transport régulier de matériel pour professionnels', faq: [FAQ.regulier, FAQ.nuit, FAQ.assurance, FAQ.devis],
+    service: 'pros', serviceName: 'Transport régulier de matériel pour professionnels', faq: [FAQ.securite, FAQ.regulier, FAQ.nuit, FAQ.assurance, FAQ.devis],
     body: p => `
 ${pageHero(p, 'pros', 'Loueurs de matériel, entreprises du bâtiment et des travaux publics, artisans, gestionnaires de flottes : nous organisons vos transports ponctuels et réguliers.')}
 <section class="section">
@@ -431,6 +467,7 @@ ${pageHero(p, 'pros', 'Loueurs de matériel, entreprises du bâtiment et des tra
       <h2 class="h2">Une organisation adaptée à votre activité</h2>
       <p>Avec une flotte en propre et nos propres chauffeurs, nous adaptons l'organisation de nos tournées à vos besoins : créneaux de livraison, transports de nuit selon disponibilités, transferts répétés entre vos sites.</p>
       <ul class="checks">
+        <li>La sécurité comme priorité : chauffeurs régulièrement sensibilisés, chargements arrimés, consignes de vos chantiers respectées</li>
         <li>Un interlocuteur direct pour planifier</li>
         <li>Transport ponctuel ou régulier</li>
         <li>Transferts de matériel entre chantiers</li>
@@ -444,6 +481,19 @@ ${pageHero(p, 'pros', 'Loueurs de matériel, entreprises du bâtiment et des tra
     </aside>
   </div>
 </section>
+<section class="section" aria-labelledby="pros-safety-t">
+  <div class="wrap split">
+    <div>
+      <p class="kicker">Sécurité</p>
+      <h2 id="pros-safety-t" class="h2">Un transporteur qui partage vos exigences de sécurité</h2>
+      <p>Sur vos chantiers comme dans vos agences, nos chauffeurs interviennent dans le respect de vos consignes. Ils sont régulièrement sensibilisés aux risques liés au chargement, au déchargement et à la circulation sur site.</p>
+      <p>Pour un loueur ou une entreprise de travaux publics, c'est l'assurance d'un matériel livré sécurisé, d'une intervention maîtrisée et d'une prévention des risques prise au sérieux.</p>
+    </div>
+    <ul class="safety-mini">
+      ${SAFETY.slice(0, 4).map(([ic, t, d]) => `<li><span class="safety-ic">${PICTO[ic]}</span><span><b>${t}</b><br>${d}</span></li>`).join('')}
+    </ul>
+  </div>
+</section>
 ${quoteForm(p.service, { title: 'Décrivez votre besoin' })}
 ${faqBlock(p.faq)}
 ${contactBlock(p.service, 'contact_page', 'Un besoin régulier ?')}`
@@ -453,10 +503,10 @@ ${contactBlock(p.service, 'contact_page', 'Un besoin régulier ?')}`
   {
     path: '/nos-moyens-techniques', heroImg: 'plateau', file: 'nos-moyens-techniques.html',
     title: 'Camion plateau 16 tonnes, 10 mètres : nos moyens techniques | IMD Transport',
-    description: 'Poids lourds porteurs plateau DAF et Iveco : plateau de 10 m × 2,48 m, jusqu\'à 16 tonnes, rampes de chargement et treuil, sans grue embarquée.',
+    description: 'Porteurs plateau DAF et Iveco : plateau de 10 m × 2,48 m, jusqu\'à 16 tonnes, rampes, treuil et arrimage sécurisé des chargements. Sans grue embarquée.',
     h1: 'Nos moyens techniques',
     crumbs: crumbs({ name: 'Moyens techniques', path: '/nos-moyens-techniques' }),
-    service: 'general', faq: [FAQ.poids, FAQ.dims, FAQ.grue, FAQ.nonroulant],
+    service: 'general', faq: [FAQ.poids, FAQ.dims, FAQ.grue, FAQ.securite, FAQ.nonroulant],
     body: p => `
 ${pageHero(p, 'plateau', 'Des poids lourds porteurs plateau DAF et Iveco, équipés de rampes et d\'un treuil, conduits par nos propres chauffeurs.')}
 <section class="section">
@@ -489,6 +539,8 @@ ${pageHero(p, 'plateau', 'Des poids lourds porteurs plateau DAF et Iveco, équip
       <p>Un plateau long permet de charger un engin avec ses accessoires, des poutres IPN ou des échafaudages en une seule rotation, dans la limite de la charge et des règles d'arrimage.</p>
       <h3 class="h3">Rampes et treuil, sans grue</h3>
       <p>Les engins roulants montent par les rampes. Le treuil assiste le chargement des véhicules non roulants, sous réserve de faisabilité. Nos véhicules ne disposent pas de grue embarquée : le matériel à lever doit pouvoir être chargé par un moyen de levage présent sur site.</p>
+      <h3 class="h3">Sécurité du chargement et du transport</h3>
+      <p>Avant chaque départ, le chargement est calé et arrimé sur le plateau. Nos chauffeurs, régulièrement sensibilisés aux risques du chargement et du déchargement, restent vigilants sur l'état des véhicules, des rampes, du treuil et des moyens d'arrimage.</p>
     </div>
     ${plateSchema()}
   </div>
@@ -565,6 +617,7 @@ ${contactBlock('general', 'contact_page')}`
     <p>Pour être clairs avec nos clients : IMD Transport exerce une activité de transport. Nous ne louons pas de matériel et ne proposons ni porte-char, ni transport exceptionnel, ni dépannage autoroutier, ni levage.</p>
     <h2 class="h2">Notre organisation</h2>
     <ul class="checks">
+      <li>La sécurité comme priorité : chauffeurs régulièrement sensibilisés, chargements arrimés</li>
       <li>Une flotte en propre de poids lourds porteurs plateau</li>
       <li>Nos propres chauffeurs</li>
       <li>Une organisation flexible, de jour comme de nuit selon disponibilités</li>

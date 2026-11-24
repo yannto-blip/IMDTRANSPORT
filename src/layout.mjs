@@ -37,6 +37,21 @@ export const ctaPair = (loc, svc = 'general', { size = '' } = {}) => `
 
 export const mailLink = loc => `<a class="link-mail" href="${mailHref}" data-track="click_email" data-loc="${loc}">${ICON.mail}<span>${esc(C.email)}</span></a>`;
 
+
+// Pictogrammes sécurité / réassurance (trait 2px, currentColor)
+const PI = d => `<svg class="pi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</g></svg>`;
+export const PICTO = {
+  shield: PI('<path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6l-7-3Z"/><path d="m9 12 2 2 4-4"/>'),
+  people: PI('<circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.5a3 3 0 0 1 0 5.6M17.5 14.2A5.5 5.5 0 0 1 20.5 19"/>'),
+  strap: PI('<rect x="3" y="13" width="18" height="6" rx="1"/><path d="M7 13 10 5M17 13l-3-8M10 5h4"/><path d="M12 13v6"/>'),
+  helmet: PI('<path d="M4 16a8 8 0 0 1 16 0"/><path d="M2.5 16h19v2.5h-19z"/><path d="M10 8.5V6h4v2.5"/>'),
+  clock: PI('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
+  wrench: PI('<path d="M14.5 6.5a4 4 0 0 0-5.3 5.2L4 17l3 3 5.3-5.2a4 4 0 0 0 5.2-5.3l-2.4 2.4-2.6-.6-.6-2.6 2.6-2.2Z"/>'),
+  alert: PI('<path d="M12 3.5 2.5 20h19L12 3.5Z"/><path d="M12 10v4.5M12 17.2v.1"/>'),
+  truck: PI('<path d="M2.5 7h11v9h-11zM13.5 10h4l3 3v3h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/>'),
+  check: PI('<path d="M5 3.5h10l4 4v13H5z"/><path d="m8.5 13.5 2.3 2.3 4.7-4.8"/>')
+};
+
 // ---------- Photos (emplacements remplaçables via site.json) ----------
 export const photo = (key, { eager = false, cls = '', sizes = '(min-width: 1000px) 50vw, 100vw' } = {}) => {
   const im = site.images[key];

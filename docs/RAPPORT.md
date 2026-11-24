@@ -22,6 +22,10 @@
 Points de vigilance sur les visuels : logo **Renault** visible sur le fourgon (marque tierce, à flouter ou remplacer si souhaité) ; pseudo-inscriptions générées par l'IA sur la pelle et la calandre Iveco (illisibles de loin) ; essieux multiples (4 essieux sur certains porteurs) : cohérent avec un porteur lourd mais pas forcément identique à la flotte réelle.
 Lighthouse mobile (local, gzip, 3 passages) : accueil Perf 94–97, LCP 2,4–2,8 s (simulation 4G lente), CLS 0 ; pages prestations Perf 99–100, LCP ≈ 1,8–2,3 s. Accessibilité, bonnes pratiques et SEO : 100. Les mesures terrain (Core Web Vitals réels) viendront de la Search Console après mise en ligne.
 
+**Positionnement sécurité (24/11, 20 h)** : section « La sécurité n'est pas une option. C'est notre priorité. » sur l'accueil (après les moyens techniques), 6 axes avec pictogrammes au trait, signature « Chaque transport. Chaque chantier. La même exigence. » ; réassurance sous le hero (Sécurité prioritaire · Flotte en propre · Marchandises assurées) ; bloc sécurité sur la page Professionnels et paragraphe « Sécurité du chargement et du transport » sur Moyens techniques ; nouvelle question FAQ (accueil, pros, moyens) ; meta descriptions, données structurées (`knowsAbout`) et `llms.txt` enrichis (sécurité du transport, arrimage, prévention des risques). Aucune certification, formation diplômante, statistique ni procédure inventée.
+**À valider par le dirigeant** : les 6 axes affichés (sensibilisation régulière, arrimage, consignes de chantier, temps de conduite et de repos, vigilance sur véhicules et équipements, prévention des risques) et la réponse FAQ qui affirme que chaque chargement est arrimé avant le départ.
+Tests : contrôle automatique ✓, 12 pages × 6 largeurs sans débordement ✓, 34 tests d'interaction/formulaire ✓, axe-core 0 violation ✓, Lighthouse mobile accueil 100/100/100/100 (LCP 0,8 s), pros 99–100.
+
 ---
 
 # Sprint 1

@@ -49,7 +49,7 @@ const org = {
   areaServed,
   vatID: site.legal.vat,
   identifier: { '@type': 'PropertyValue', propertyID: 'SIREN', value: site.legal.siren.replace(/\s/g, '') },
-  knowsAbout: ['Transport d\'engins de chantier', 'Transport de mini-pelle', 'Transport de nacelle élévatrice', 'Transport de matériel BTP', 'Transport de véhicules utilitaires', 'Camion plateau'],
+  knowsAbout: ['Transport d\'engins de chantier', 'Transport de mini-pelle', 'Transport de nacelle élévatrice', 'Transport de matériel BTP', 'Transport de véhicules utilitaires', 'Camion plateau', 'Sécurité du transport', 'Arrimage des engins', 'Prévention des risques au chargement'],
   contactPoint: { '@type': 'ContactPoint', telephone: C.phoneIntl, email: C.email, contactType: 'customer service', availableLanguage: 'French', areaServed: 'FR' },
   ...(site.googleBusinessUrl ? { sameAs: [site.googleBusinessUrl] } : {})
 };
@@ -116,6 +116,7 @@ writeFileSync(join(OUT, 'llms.txt'), `# ${site.name}
 - Équipement : rampes de chargement et treuil. Pas de grue embarquée.
 - Amplitude : ${S.schedule}.
 - Zone : Paris (75), Seine-et-Marne (77), Yvelines (78), Essonne (91), Hauts-de-Seine (92), Seine-Saint-Denis (93), Val-de-Marne (94), Val-d'Oise (95).
+- Sécurité : priorité affichée ; chauffeurs régulièrement sensibilisés aux risques du transport, du chargement/déchargement et des interventions sur chantier ; chargements arrimés ; respect des consignes de chantier et des temps de conduite et de repos.
 - Clients : professionnels (loueurs de matériel, BTP, artisans) et particuliers. Transports ponctuels et réguliers.
 - Contact : téléphone ${C.phoneIntl}, WhatsApp https://wa.me/${C.whatsapp}, e-mail ${C.email}.
 
