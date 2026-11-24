@@ -26,6 +26,10 @@ Lighthouse mobile (local, gzip, 3 passages) : accueil Perf 94–97, LCP 2,4–2,
 **À valider par le dirigeant** : les 6 axes affichés (sensibilisation régulière, arrimage, consignes de chantier, temps de conduite et de repos, vigilance sur véhicules et équipements, prévention des risques) et la réponse FAQ qui affirme que chaque chargement est arrimé avant le départ.
 Tests : contrôle automatique ✓, 12 pages × 6 largeurs sans débordement ✓, 34 tests d'interaction/formulaire ✓, axe-core 0 violation ✓, Lighthouse mobile accueil 100/100/100/100 (LCP 0,8 s), pros 99–100.
 
+**Formulaire : envoi WhatsApp ou e-mail (24/11, 20 h 15)** : formulaire unique mutualisé (`quoteForm()` + `main.js`) sur l'accueil, les 5 pages prestations et la page pros. Deux boutons : « Envoyer par WhatsApp » (vert, wa.me) et « Envoyer par e-mail » (orange, mailto vers imdtransport92@gmail.com, objet « Demande de devis transport — type — départ → arrivée », corps complet). Nouveau champ téléphone (facultatif). Liens discrets « Copier la demande » / « Copier l'adresse e-mail » pour les postes sans WhatsApp ni messagerie. Mention des photos à joindre dans WhatsApp ou l'e-mail. Aucun message de réception avant envoi réel ; avertissement si la demande est très longue (lien mailto > 1 900 caractères, risque de coupure dans certaines messageries). Événements préparés, inactifs : `submit_quote_whatsapp`, `submit_quote_email`, `copy_quote`, `copy_email` (sans donnée personnelle). Politique de confidentialité mise à jour.
+Tests : 57 tests automatisés ✓ dont les deux parcours sur ordinateur et mobile (validation, contenu, accents, symboles, retours à la ligne, encodage, objet, longueur, copie, suivi) et le comportement réel (ouverture wa.me sur mobile, appel mailto sans erreur) ; 12 pages × 6 largeurs sans débordement ; axe-core 0 violation ; Lighthouse mini-pelle 100/100/100/100.
+Limite connue : un lien mailto ouvre l'application de messagerie par défaut de l'appareil ; sur un poste sans client configuré, rien ne s'ouvre (d'où la copie).
+
 ---
 
 # Sprint 1

@@ -74,17 +74,17 @@ export const quoteForm = (svc = 'general', { title = 'Demande de devis', intro =
 <section class="section quote" id="devis" aria-labelledby="devis-t">
   <div class="wrap quote-grid">
     <div class="quote-side">
-      <p class="kicker">Devis via WhatsApp</p>
+      <p class="kicker">Devis par WhatsApp ou e-mail</p>
       <h2 id="devis-t" class="h2">${title}</h2>
-      <p>${intro || 'Pas disponible au téléphone ? Décrivez votre transport : votre demande arrive structurée sur notre WhatsApp et nous la traitons dès que possible.'}</p>
+      <p>${intro || 'Pas disponible au téléphone ? Décrivez votre transport : votre demande nous arrive structurée, par WhatsApp ou par e-mail, et nous la traitons dès que possible.'}</p>
       <ol class="quote-steps">
         <li><b>Remplissez</b> les informations que vous connaissez.</li>
-        <li><b>WhatsApp s'ouvre</b> avec votre message prêt à partir.</li>
-        <li><b>Appuyez sur Envoyer</b> dans WhatsApp, et joignez vos photos dans la conversation.</li>
+        <li><b>Choisissez WhatsApp ou e-mail</b> : votre message s'ouvre, prêt à partir.</li>
+        <li><b>Joignez vos photos</b> si besoin, puis <b>envoyez</b> depuis WhatsApp ou votre messagerie.</li>
       </ol>
-      <p class="small">Aucune donnée n'est enregistrée par ce site : le message ne part que lorsque vous l'envoyez depuis WhatsApp.</p>
+      <p class="small">Aucune donnée n'est enregistrée par ce site : la demande ne part que lorsque vous l'envoyez vous-même depuis WhatsApp ou votre messagerie.</p>
     </div>
-    <form class="qform" data-quote novalidate data-wa="${C.whatsapp}" data-svc="${svc}">
+    <form class="qform" data-quote novalidate data-wa="${C.whatsapp}" data-email="${C.email}" data-svc="${svc}">
       <p class="qf-req"><span aria-hidden="true">*</span> Champs obligatoires</p>
       <fieldset>
         <legend>Le matériel</legend>
@@ -116,13 +116,23 @@ export const quoteForm = (svc = 'general', { title = 'Demande de devis', intro =
       </fieldset>
       <fieldset>
         <legend>Vous</legend>
-        <div class="qf"><label for="qf-name">Nom ou société</label>
-          <input id="qf-name" name="name" type="text" maxlength="120" autocomplete="organization"></div>
+        <div class="qf-row">
+          <div class="qf"><label for="qf-name">Nom ou société</label>
+            <input id="qf-name" name="name" type="text" maxlength="120" autocomplete="organization"></div>
+          <div class="qf"><label for="qf-phone">Téléphone <span class="opt">(pour vous rappeler)</span></label>
+            <input id="qf-phone" name="phone" type="tel" maxlength="30" inputmode="tel" autocomplete="tel" placeholder="06 12 34 56 78"></div>
+        </div>
         <div class="qf"><label for="qf-info">Informations complémentaires</label>
-          <textarea id="qf-info" name="info" rows="3" maxlength="800" placeholder="Accès, horaires, engin roulant ou non…"></textarea></div>
+          <textarea id="qf-info" name="info" rows="3" maxlength="600" placeholder="Accès, horaires, engin roulant ou non…"></textarea></div>
       </fieldset>
-      <button type="submit" class="btn btn-wa btn-lg qf-submit">${ICON.wa}<span>Transmettre ma demande sur WhatsApp</span></button>
-      <p class="qf-note">Vous pourrez joindre vos photos directement dans la conversation WhatsApp.</p>
+      <div class="qf-actions">
+        <button type="submit" name="via" value="whatsapp" class="btn btn-wa btn-lg">${ICON.wa}<span>Envoyer par WhatsApp</span></button>
+        <button type="submit" name="via" value="email" class="btn btn-call btn-lg">${ICON.mail}<span>Envoyer par e-mail</span></button>
+      </div>
+      <p class="qf-note">Vous pourrez joindre vos photos directement dans WhatsApp ou dans votre e-mail avant l'envoi.</p>
+      <p class="qf-copy">Pas de WhatsApp ni de messagerie configurée sur cet appareil ?
+        <button type="button" class="linkbtn" data-copy="quote">Copier la demande</button> ·
+        <button type="button" class="linkbtn" data-copy="email">Copier l'adresse e-mail</button></p>
       <div class="qf-status" role="status" aria-live="polite" data-quote-status></div>
     </form>
   </div>

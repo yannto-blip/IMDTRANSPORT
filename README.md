@@ -60,9 +60,14 @@ Le projet Vercel `imdtransport` est relié au dépôt GitHub.
 
 Réglages : `vercel.json` définit `buildCommand: node build.mjs` et `outputDirectory: dist`.
 
-## Formulaire de devis WhatsApp
+## Formulaire de devis (WhatsApp ou e-mail)
 
-Formulaire HTML natif (accueil, pages prestations, page pros) : aucun backend ni service tiers. Au clic, `main.js` construit un message structuré (champs vides omis, date au format JJ/MM/AAAA) et ouvre `wa.me/<numéro>?text=…`. Le client confirme lui-même l'envoi dans WhatsApp et peut y joindre ses photos. Libellés et champs : `quoteForm()` dans `src/layout.mjs` ; construction du message : `buildQuoteMessage()` dans `src/assets/js/main.js`.
+Un seul gabarit, `quoteForm()` dans `src/layout.mjs`, utilisé sur l'accueil, les 5 pages prestations et la page pros. Aucun backend ni service tiers : `main.js` construit le message à partir des champs remplis (champs vides omis, date JJ/MM/AAAA) puis ouvre :
+- **Envoyer par WhatsApp** (vert) → `https://wa.me/<numéro>?text=…`
+- **Envoyer par e-mail** (orange) → `mailto:<email>?subject=…&body=…` (objet « Demande de devis transport — type — départ → arrivée »)
+- liens discrets **Copier la demande** / **Copier l'adresse e-mail** pour les postes sans WhatsApp ni messagerie configurée.
+
+Le client confirme lui-même l'envoi et peut joindre ses photos. Aucun message de confirmation n'est affiché avant l'envoi réel. Construction du message : `buildQuoteMessage()` / `buildSubject()` dans `src/assets/js/main.js`. Événements prêts (inactifs sans `window.IMD_ANALYTICS`) : `submit_quote_whatsapp`, `submit_quote_email`, `copy_quote`, `copy_email`.
 
 ## Prévisualisations
 

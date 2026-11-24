@@ -53,28 +53,71 @@
     });
   });
 
-  /* ---------- Formulaire de devis → WhatsApp ----------
-     Aucun envoi serveur : le message est construit ici puis ouvert dans WhatsApp.
-     La demande n'est transmise que lorsque le client appuie sur « Envoyer » dans WhatsApp. */
-  function buildQuoteMessage(f) {
-    var v = function (n) { var el = f.elements[n]; return el ? String(el.value).replace(/\s+$/g, '').replace(/^\s+/g, '') : ''; };
-    var date = v('date');
+  /* ---------- Formulaire de devis → WhatsApp ou e-mail ----------
+     Aucun envoi serveur : le message est construit ici puis ouvert dans WhatsApp (wa.me)
+     ou dans la messagerie du client (mailto). La demande n'est transmise que lorsque
+     le client l'envoie lui-même : aucune confirmation de réception n'est affichée. */
+  function track(ev, f) {
+    if (!window.IMD_ANALYTICS) return; // aucun traceur actif par défaut
+    (window.dataLayer = window.dataLayer || []).push({ event: ev, page_path: location.pathname, cta_location: 'form', service: f.getAttribute('data-svc') || '' });
+  }
+  function val(f, n) { var el = f.elements[n]; return el ? String(el.value).replace(/^\s+|\s+$/g, '') : ''; }
+  function buildQuoteMessage(f, mode) {
+    var date = val(f, 'date');
     if (/^\d{4}-\d{2}-\d{2}$/.test(date)) { var p = date.split('-'); date = p[2] + '/' + p[1] + '/' + p[0]; }
     var rows = [
-      ['Type de matériel', v('type')], ['Marque / modèle', v('model')], ['Poids', v('weight')], ['Dimensions', v('dims')],
-      ['Lieu de chargement', v('from')], ['Lieu de livraison', v('to')], ['Date souhaitée', date], ['Nom / société', v('name')]
+      ['Type de matériel', val(f, 'type')], ['Marque / modèle', val(f, 'model')], ['Poids', val(f, 'weight')], ['Dimensions', val(f, 'dims')],
+      ['Lieu de chargement', val(f, 'from')], ['Lieu de livraison', val(f, 'to')], ['Date souhaitée', date],
+      ['Nom / société', val(f, 'name')], ['Téléphone', val(f, 'phone')]
     ];
     var lines = ['Bonjour IMD Transport,', '', 'Je souhaite obtenir un devis pour un transport :', ''];
     rows.forEach(function (r) { if (r[1]) lines.push('- ' + r[0] + ' : ' + r[1]); });
-    var info = v('info');
-    if (info) { lines.push('', 'Informations complémentaires :', info); }
-    lines.push('', 'Je peux vous envoyer des photos du matériel dans cette conversation.', '', 'Merci.');
+    var info = val(f, 'info');
+    if (info) lines.push('', 'Informations complémentaires :', info);
+    lines.push('', mode === 'email' ? 'Je joins, si besoin, des photos du matériel à cet e-mail.' : 'Je peux vous envoyer des photos du matériel dans cette conversation.', '', 'Merci.');
     return lines.join('\n');
   }
+  function buildSubject(f) {
+    var parts = ['Demande de devis transport'];
+    if (val(f, 'type')) parts.push(val(f, 'type'));
+    if (val(f, 'from') && val(f, 'to')) parts.push(val(f, 'from') + ' → ' + val(f, 'to'));
+    return parts.join(' — ');
+  }
   window.IMD_buildQuoteMessage = buildQuoteMessage; // exposé pour les tests
+  window.IMD_buildSubject = buildSubject;
+  // Ouverture de l'application (surchargée dans les tests automatisés)
+  window.IMD_open = window.IMD_open || function (url, mode) {
+    if (mode === 'whatsapp' && !window.matchMedia('(pointer: coarse)').matches) window.open(url, '_blank', 'noopener');
+    else window.location.href = url;
+  };
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (ok, ko) {
+      var ta = d.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.className = 'sr';
+      d.body.appendChild(ta); ta.select();
+      try { d.execCommand('copy') ? ok() : ko(); } catch (e) { ko(e); }
+      d.body.removeChild(ta);
+    });
+  }
 
   Array.prototype.forEach.call(d.querySelectorAll('[data-quote]'), function (f) {
     var status = f.querySelector('[data-quote-status]');
+    function say(parts) { // parts : tableau de paragraphes (texte ou nœuds)
+      status.innerHTML = '';
+      parts.forEach(function (x) { var p = d.createElement('p'); if (typeof x === 'string') p.textContent = x; else p.appendChild(x); status.appendChild(p); });
+    }
+    function validate() {
+      var first = null;
+      ['from', 'to'].forEach(function (n) {
+        var el = f.elements[n], err = d.getElementById(el.id + '-err'), bad = !el.value.trim();
+        if (bad) { el.setAttribute('aria-invalid', 'true'); if (!first) first = el; } else el.removeAttribute('aria-invalid');
+        if (err) err.hidden = !bad;
+      });
+      if (first) { say(['Merci de renseigner les champs obligatoires : lieu de chargement et lieu de livraison.']); first.focus(); return false; }
+      return true;
+    }
+    function link(href, text, blank) { var a = d.createElement('a'); a.href = href; a.textContent = text; if (blank) { a.target = '_blank'; a.rel = 'noopener'; } return a; }
+
     f.addEventListener('input', function (e) {
       var el = e.target;
       if (el.getAttribute('aria-invalid') === 'true' && el.value.trim()) {
@@ -82,28 +125,42 @@
         var err = d.getElementById(el.id + '-err'); if (err) err.hidden = true;
       }
     });
+
     f.addEventListener('submit', function (e) {
       e.preventDefault();
-      var first = null;
-      ['from', 'to'].forEach(function (n) {
-        var el = f.elements[n], err = d.getElementById(el.id + '-err'), bad = !el.value.trim();
-        if (bad) { el.setAttribute('aria-invalid', 'true'); if (!first) first = el; } else el.removeAttribute('aria-invalid');
-        if (err) err.hidden = !bad;
-      });
-      if (first) {
-        status.textContent = 'Merci de renseigner les champs obligatoires : lieu de chargement et lieu de livraison.';
-        first.focus();
-        return;
+      var mode = (e.submitter && e.submitter.value) || 'whatsapp';
+      if (!validate()) return;
+      var url;
+      if (mode === 'email') {
+        url = 'mailto:' + f.getAttribute('data-email') + '?subject=' + encodeURIComponent(buildSubject(f)) + '&body=' + encodeURIComponent(buildQuoteMessage(f, 'email'));
+        track('submit_quote_email', f);
+        say(['Votre messagerie s’ouvre avec la demande pré-remplie. Joignez vos photos si besoin : la demande ne nous parvient qu’après avoir cliqué sur « Envoyer » dans votre messagerie.',
+          (url.length > 1900
+            ? 'Demande longue : si le texte apparaît coupé dans votre messagerie, utilisez « Copier la demande » ci-dessus et collez-la dans votre e-mail.'
+            : 'Rien ne s’est ouvert ? Utilisez « Copier la demande » ci-dessus et envoyez-la à ' + f.getAttribute('data-email') + ' depuis votre webmail.')]);
+      } else {
+        url = 'https://wa.me/' + f.getAttribute('data-wa') + '?text=' + encodeURIComponent(buildQuoteMessage(f, 'whatsapp'));
+        track('submit_quote_whatsapp', f);
+        say(['WhatsApp s’ouvre avec votre demande pré-remplie. Elle ne nous parvient qu’après avoir appuyé sur « Envoyer » dans WhatsApp. Vous pourrez y joindre vos photos.',
+          link(url, 'WhatsApp ne s’est pas ouvert ? Cliquez ici.', true)]);
       }
-      if (window.IMD_ANALYTICS) (window.dataLayer = window.dataLayer || []).push({ event: 'submit_whatsapp_form', page_path: location.pathname, cta_location: 'form', service: f.getAttribute('data-svc') || '' });
-      var url = 'https://wa.me/' + f.getAttribute('data-wa') + '?text=' + encodeURIComponent(buildQuoteMessage(f));
-      status.innerHTML = '';
-      var p1 = d.createElement('p'); p1.textContent = 'WhatsApp s’ouvre avec votre demande pré-remplie. Elle ne nous parvient qu’après avoir appuyé sur « Envoyer » dans WhatsApp. Vous pourrez y joindre vos photos.';
-      var p2 = d.createElement('p'); var a = d.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener';
-      a.textContent = 'WhatsApp ne s’est pas ouvert ? Cliquez ici.'; p2.appendChild(a);
-      status.appendChild(p1); status.appendChild(p2);
-      if (window.matchMedia('(pointer: coarse)').matches) { window.location.href = url; }
-      else { window.open(url, '_blank', 'noopener'); }
+      window.IMD_open(url, mode);
+    });
+
+    Array.prototype.forEach.call(f.querySelectorAll('[data-copy]'), function (btn) {
+      btn.addEventListener('click', function () {
+        var what = btn.getAttribute('data-copy'), email = f.getAttribute('data-email');
+        if (what === 'quote' && !validate()) return;
+        var text = what === 'quote' ? 'Objet : ' + buildSubject(f) + '\n\n' + buildQuoteMessage(f, 'email') : email;
+        copyText(text).then(function () {
+          track(what === 'quote' ? 'copy_quote' : 'copy_email', f);
+          say([what === 'quote'
+            ? 'Demande copiée. Collez-la dans un e-mail adressé à ' + email + ' (ou dans WhatsApp au ' + (f.getAttribute('data-wa') || '').replace(/^33/, '0').replace(/(\d{2})(?=\d)/g, '$1 ') + '), puis envoyez-la. Elle n’est pas encore transmise.'
+            : 'Adresse copiée : ' + email + '.']);
+        }, function () {
+          say(['Copie impossible sur cet appareil. Adresse : ' + email + '.']);
+        });
+      });
     });
   });
 

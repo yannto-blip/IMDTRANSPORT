@@ -676,8 +676,8 @@ ${contactBlock('general', 'contact_page')}`
 <section class="section"><div class="wrap narrow prose legal">
   <h2 class="h3">Responsable du traitement</h2>
   <p>${esc(site.legalName)}, ${esc(site.legal.form)}, ${esc(site.legal.address)}. Contact : <a href="mailto:${site.contact.email}">${esc(site.contact.email)}</a>.</p>
-  <h2 class="h3">Aucun formulaire, aucun compte</h2>
-  <p>Ce site ne comporte ni formulaire de collecte, ni espace client. Lorsque vous nous contactez par téléphone, WhatsApp ou e-mail, nous traitons les informations que vous nous communiquez (nom, coordonnées, détail du transport, photos) uniquement pour répondre à votre demande, établir un devis et réaliser la prestation.</p>
+  <h2 class="h3">Aucune collecte par le site, aucun compte</h2>
+  <p>Ce site n'a ni espace client ni base de données. Le formulaire de devis ne transmet rien à notre serveur : il prépare un message que vous envoyez vous-même par WhatsApp ou par e-mail, depuis votre propre application. Lorsque vous nous contactez par téléphone, WhatsApp ou e-mail, nous traitons les informations que vous nous communiquez (nom, coordonnées, détail du transport, photos) uniquement pour répondre à votre demande, établir un devis et réaliser la prestation.</p>
   <h2 class="h3">Base légale et conservation</h2>
   <p>Ces traitements reposent sur les mesures précontractuelles prises à votre demande et sur l'exécution du contrat. Les échanges sont conservés le temps nécessaire au traitement de la demande et, pour les clients, pendant la durée de la relation commerciale augmentée des délais de prescription et des obligations comptables applicables.</p>
   <h2 class="h3">WhatsApp</h2>
