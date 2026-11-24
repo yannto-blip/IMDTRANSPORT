@@ -61,7 +61,7 @@ const serviceLd = p => ({ '@context': 'https://schema.org', '@type': 'Service', 
 // Typographie française : espaces fines insécables avant ? ! : ; » et après «, sans toucher aux balises.
 const typo = html => html
   .replace(/>([^<]+)</g, (m, t) => '>' + t.replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« ').replace(/(\d) (t|m|m²|tonnes|mètres|km)(?![\wÀ-ÿ])/g, '$1 $2') + '<')
-  .replace(/(<h[1-3][^>]*>[^]*?<\/h[1-3]>|<p class="kicker[^"]*">[^]*?<\/p>)/g, h => h.replace(/(l'Île-de-France|Île-de-France)/g, '<span class="nowrap">$1</span>'));
+  .replace(/>([^<]*?)(l'Île-de-France|Île-de-France)([^<]*)</g, (m, a, w, b) => `>${a}<span class="nowrap">${w}</span>${b}<`);
 
 // 3. Pages
 const sitemap = [];
