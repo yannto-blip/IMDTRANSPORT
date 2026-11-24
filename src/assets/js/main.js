@@ -62,18 +62,38 @@
     (window.dataLayer = window.dataLayer || []).push({ event: ev, page_path: location.pathname, cta_location: 'form', service: f.getAttribute('data-svc') || '' });
   }
   function val(f, n) { var el = f.elements[n]; return el ? String(el.value).replace(/^\s+|\s+$/g, '') : ''; }
+  // Liens Google Maps publics (sans clé API) : coordonnées GPS si une suggestion IGN a été choisie, sinon adresse saisie.
+  function place(f, n) {
+    var el = f.elements[n], lat = el && el.getAttribute('data-lat'), lon = el && el.getAttribute('data-lon');
+    return lat && lon ? lat + ',' + lon : val(f, n);
+  }
+  function mapsLinks(f) {
+    var a = place(f, 'from'), b = place(f, 'to');
+    if (!a || !b) return [];
+    var q = function (x) { return encodeURIComponent(x).replace(/%2C/g, ','); };
+    return [
+      'Localisation (liens Google Maps) :',
+      '- Prise en charge : https://www.google.com/maps/search/?api=1&query=' + q(a),
+      '- Livraison : https://www.google.com/maps/search/?api=1&query=' + q(b),
+      '- Itinéraire indicatif, non validé pour les poids lourds : https://www.google.com/maps/dir/?api=1&origin=' + q(a) + '&destination=' + q(b) + '&travelmode=driving'
+    ];
+  }
   function buildQuoteMessage(f, mode) {
     var date = val(f, 'date');
     if (/^\d{4}-\d{2}-\d{2}$/.test(date)) { var p = date.split('-'); date = p[2] + '/' + p[1] + '/' + p[0]; }
     var rows = [
       ['Type de matériel', val(f, 'type')], ['Marque / modèle', val(f, 'model')], ['Poids', val(f, 'weight')], ['Dimensions', val(f, 'dims')],
-      ['Lieu de chargement', val(f, 'from')], ['Lieu de livraison', val(f, 'to')], ['Date souhaitée', date],
-      ['Nom / société', val(f, 'name')], ['Téléphone', val(f, 'phone')]
+      ['Lieu de prise en charge', val(f, 'from')], ['Complément / accès (prise en charge)', val(f, 'fromExtra')],
+      ['Lieu de livraison', val(f, 'to')], ['Complément / accès (livraison)', val(f, 'toExtra')],
+      ['Date souhaitée', date], ['Nom / société', val(f, 'name')], ['Téléphone', val(f, 'phone')]
     ];
     var lines = ['Bonjour IMD Transport,', '', 'Je souhaite obtenir un devis pour un transport :', ''];
     rows.forEach(function (r) { if (r[1]) lines.push('- ' + r[0] + ' : ' + r[1]); });
     var info = val(f, 'info');
     if (info) lines.push('', 'Informations complémentaires :', info);
+    var maps = mapsLinks(f);
+    if (maps.length) lines.push('');
+    lines = lines.concat(maps);
     lines.push('', mode === 'email' ? 'Je joins, si besoin, des photos du matériel à cet e-mail.' : 'Je peux vous envoyer des photos du matériel dans cette conversation.', '', 'Merci.');
     return lines.join('\n');
   }
@@ -100,6 +120,95 @@
     });
   }
 
+  /* ---------- Autocomplétion d'adresse (Géoplateforme IGN) ----------
+     Amélioration progressive : la saisie libre reste possible et une panne de l'API
+     ne bloque jamais la demande. Seul le texte tapé dans le champ adresse est envoyé
+     à l'IGN ; aucune recherche n'est conservée. */
+  var AC_URL = 'https://data.geopf.fr/geocodage/completion/';
+  var AC_POI = /zone|parc d.activit|activit|industri|port|gare|a[ée]roport|march[ée] d.int|centre commercial|chantier|d[ée]p[oô]t|entrep[oô]t|usine|carri[eè]re/i;
+  window.IMD_fetch = window.IMD_fetch || function (url, opts) { return fetch(url, opts); }; // surchargé dans les tests
+  function acResults(json) {
+    var seen = {}, out = [];
+    (json && json.results || []).forEach(function (r) {
+      var keep = /^(housenumber|street|municipality|locality|quartier)$/.test(r.kind) || (r.kind !== 'administratif' && AC_POI.test(r.kind || ''));
+      var key = (r.fulltext || '').toLowerCase();
+      if (!keep || !key || seen[key]) return;
+      seen[key] = 1; out.push(r);
+    });
+    return out.slice(0, 5);
+  }
+  function initAutocomplete(box) {
+    var input = box.querySelector('input'), list = box.querySelector('[role=listbox]'), live = box.querySelector('[data-ac-live]');
+    var timer = null, ctrl = null, items = [], active = -1, seq = 0;
+    function close() { list.hidden = true; list.innerHTML = ''; items = []; active = -1; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); }
+    function highlight(i) {
+      active = i;
+      Array.prototype.forEach.call(list.querySelectorAll('[role=option]'), function (li, k) { li.setAttribute('aria-selected', k === i ? 'true' : 'false'); if (k === i) li.scrollIntoView({ block: 'nearest' }); });
+      if (i >= 0) input.setAttribute('aria-activedescendant', input.id + '-opt-' + i); else input.removeAttribute('aria-activedescendant');
+    }
+    function choose(i) {
+      var r = items[i]; if (!r) return;
+      input.value = r.fulltext;
+      if (typeof r.y === 'number' && typeof r.x === 'number') { input.setAttribute('data-lat', r.y.toFixed(6)); input.setAttribute('data-lon', r.x.toFixed(6)); }
+      input.removeAttribute('aria-invalid');
+      var err = d.getElementById(input.id + '-err'); if (err) err.hidden = true;
+      close(); live.textContent = 'Adresse sélectionnée : ' + r.fulltext;
+    }
+    function render(res) {
+      items = res; list.innerHTML = '';
+      if (!res.length) { close(); live.textContent = 'Aucune suggestion : vous pouvez saisir l’adresse librement.'; return; }
+      res.forEach(function (r, i) {
+        var li = d.createElement('li'); li.id = input.id + '-opt-' + i; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', 'false');
+        var main = d.createElement('span'); main.className = 'ac-main';
+        var sub = d.createElement('span'); sub.className = 'ac-sub';
+        var head = (r.fulltext || '').split(', ')[0];
+        main.textContent = head || r.fulltext;
+        sub.textContent = [r.zipcode, r.city].filter(Boolean).join(' ') || r.fulltext;
+        li.appendChild(main); li.appendChild(sub);
+        li.addEventListener('mousedown', function (e) { e.preventDefault(); }); // garde le focus dans le champ
+        li.addEventListener('click', function () { choose(i); });
+        list.appendChild(li);
+      });
+      var src = d.createElement('li'); src.className = 'ac-src'; src.setAttribute('role', 'presentation'); src.textContent = 'Suggestions : Géoplateforme IGN';
+      list.appendChild(src);
+      list.hidden = false; input.setAttribute('aria-expanded', 'true'); active = -1;
+      live.textContent = res.length + (res.length > 1 ? ' suggestions disponibles' : ' suggestion disponible') + ', flèches haut et bas pour naviguer.';
+    }
+    function search(text) {
+      if (ctrl) ctrl.abort();                                   // annule la requête obsolète
+      ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+      var my = ++seq, c = ctrl, to = setTimeout(function () { if (c) c.abort(); }, 4000);
+      var url = AC_URL + '?' + new URLSearchParams({ text: text, type: 'StreetAddress,PositionOfInterest', maxSuggestions: '10', terr: 'METROPOLE' });
+      window.IMD_fetch(url, { signal: c ? c.signal : undefined, credentials: 'omit', referrerPolicy: 'strict-origin-when-cross-origin' })
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (j) { if (my === seq && input.value.trim() === text) render(acResults(j)); })
+        .catch(function () { if (my === seq) close(); })           // API indisponible : saisie libre, rien ne bloque
+        .then(function () { clearTimeout(to); });
+    }
+    input.addEventListener('input', function () {
+      input.removeAttribute('data-lat'); input.removeAttribute('data-lon');   // le texte a changé : coordonnées caduques
+      clearTimeout(timer);
+      var t = input.value.trim();
+      if (t.length < 3) { if (ctrl) ctrl.abort(); close(); return; }
+      timer = setTimeout(function () { search(t); }, 400);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (list.hidden) { if (e.key === 'ArrowDown' && items.length) { list.hidden = false; } return; }
+      var n = items.length;
+      if (e.key === 'ArrowDown') { e.preventDefault(); highlight((active + 1) % n); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); highlight((active - 1 + n) % n); }
+      else if (e.key === 'Enter') { if (active >= 0) { e.preventDefault(); choose(active); } else close(); }
+      else if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'Tab') { close(); }
+    });
+    input.addEventListener('blur', function () { setTimeout(close, 150); });
+    // Mobile : remonte le champ en haut de l'écran pour laisser la place aux suggestions (clavier + barre de contact)
+    input.addEventListener('focus', function () {
+      if (window.matchMedia('(pointer: coarse)').matches && window.innerHeight < 900) setTimeout(function () { input.scrollIntoView({ block: 'start' }); }, 250);
+    });
+  }
+  Array.prototype.forEach.call(d.querySelectorAll('[data-ac]'), initAutocomplete);
+
   Array.prototype.forEach.call(d.querySelectorAll('[data-quote]'), function (f) {
     var status = f.querySelector('[data-quote-status]');
     function say(parts) { // parts : tableau de paragraphes (texte ou nœuds)
@@ -113,7 +222,7 @@
         if (bad) { el.setAttribute('aria-invalid', 'true'); if (!first) first = el; } else el.removeAttribute('aria-invalid');
         if (err) err.hidden = !bad;
       });
-      if (first) { say(['Merci de renseigner les champs obligatoires : lieu de chargement et lieu de livraison.']); first.focus(); return false; }
+      if (first) { say(['Merci de renseigner les champs obligatoires : lieu de prise en charge et lieu de livraison.']); first.focus(); return false; }
       return true;
     }
     function link(href, text, blank) { var a = d.createElement('a'); a.href = href; a.textContent = text; if (blank) { a.target = '_blank'; a.rel = 'noopener'; } return a; }

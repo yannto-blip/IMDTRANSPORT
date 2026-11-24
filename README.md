@@ -67,6 +67,8 @@ Un seul gabarit, `quoteForm()` dans `src/layout.mjs`, utilisé sur l'accueil, le
 - **Envoyer par e-mail** (orange) → `mailto:<email>?subject=…&body=…` (objet « Demande de devis transport — type — départ → arrivée »)
 - liens discrets **Copier la demande** / **Copier l'adresse e-mail** pour les postes sans WhatsApp ni messagerie configurée.
 
+**Adresses** : les champs « Lieu de prise en charge » et « Lieu de livraison » interrogent l'API publique d'autocomplétion de la Géoplateforme IGN (`https://data.geopf.fr/geocodage/completion/`, gratuite, sans clé, 50 requêtes/s par IP) : à partir de 3 caractères, 400 ms après la dernière frappe, requête précédente annulée, France métropolitaine (`terr=METROPOLE`), 5 suggestions maximum après filtrage. La saisie libre reste toujours possible ; si l'API ne répond pas, le formulaire fonctionne normalement. Une suggestion choisie fournit les coordonnées GPS, utilisées pour les liens Google Maps (point de prise en charge, point de livraison, itinéraire indicatif) ajoutés au message ; à défaut, l'adresse saisie est utilisée. La CSP (`vercel.json`) autorise `connect-src https://data.geopf.fr`. Composant : `initAutocomplete()` dans `main.js`, gabarit `addrField()` dans `layout.mjs`.
+
 Le client confirme lui-même l'envoi et peut joindre ses photos. Aucun message de confirmation n'est affiché avant l'envoi réel. Construction du message : `buildQuoteMessage()` / `buildSubject()` dans `src/assets/js/main.js`. Événements prêts (inactifs sans `window.IMD_ANALYTICS`) : `submit_quote_whatsapp`, `submit_quote_email`, `copy_quote`, `copy_email`.
 
 ## Prévisualisations

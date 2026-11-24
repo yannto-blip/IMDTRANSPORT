@@ -1,5 +1,27 @@
 # Rapport — refonte imdtransport.fr
 
+## État pour la recette (24/11/2026, 21 h)
+
+Branche `feat/imd-website-redesign` uniquement. `main` et la production imdtransport.fr inchangées (dernier déploiement de production : 16/04/2026, ancien site). Aucun DNS modifié, aucune dépense.
+
+### Points restant à valider avant publication (liste définitive)
+1. **Recette du dirigeant** : relecture des textes, réception effective d'un devis test par WhatsApp et par e-mail.
+2. **Engagements sécurité** : valider les 6 axes affichés et la réponse FAQ (« chaque chargement est sécurisé et arrimé avant le départ »).
+3. **Mentions légales** : confirmer forme, capital, siège, présidente/directrice de publication ; fournir le **n° d'inscription au registre des transporteurs** (DRIEAT) ; confirmer que l'adresse du siège peut être publiée.
+4. **Logos clients** : autorisations écrites de Kiloutou, Loxam, Colas et Bouygues Bâtiment (`docs/autorisations.md`) ; sinon repasser en texte.
+5. **Logo IMD Transport** : confirmer les droits d'usage commercial des éléments Canva du logo.
+6. **Visuels** : visuels IA marqués « Illustration non contractuelle » ; flouter/remplacer le logo Renault du fourgon si souhaité ; idéalement remplacer progressivement par de vraies photos.
+7. **Hébergement** : plan Vercel très probablement Hobby (usage non commercial). Choisir Vercel Pro (20 $/mois) ou une offre gratuite autorisant l'usage commercial (Cloudflare Pages, Netlify) avant la mise en production.
+8. **Robots d'entraînement IA** : décider de les autoriser (défaut actuel) ou de les bloquer (lignes prêtes dans `robots.txt`).
+9. **Fiche Google Business** : fournir l'URL (footer + `sameAs`).
+10. **Mise en production** : après validation, fusion de la branche dans `main`, puis Google Search Console (propriété domaine, sitemap).
+
+---
+
+## Autocomplétion IGN et liens Google Maps (24/11, 21 h)
+
+API publique Géoplateforme IGN `data.geopf.fr/geocodage/completion/` (pas l'ancienne API BAN, pas Google). Vérifié en conditions réelles : réponse JSON, accès CORS depuis une autre origine autorisé, limite publiée de 50 requêtes/s par IP. L'API ignore `maxSuggestions` (10 résultats renvoyés) : filtrage côté client (doublons et lieux non pertinents écartés, 5 maximum). Déclenchement à 3 caractères, temporisation 400 ms, annulation des requêtes obsolètes, délai maximum 4 s, `terr=METROPOLE`. Liste accessible (combobox ARIA, clavier, souris, tactile, annonces vocales). Saisie libre toujours possible ; une panne d'API ne bloque rien. Mention : une adresse trouvée ne garantit pas l'accès poids lourds. Champs « Complément d'adresse / accès chantier » sous chaque adresse. Messages WhatsApp/e-mail enrichis de 3 liens Google Maps publics (prise en charge, livraison, itinéraire indicatif « non validé pour les poids lourds »), coordonnées GPS si une suggestion est choisie, adresse texte sinon. Seul le texte du champ adresse est envoyé à l'IGN, rien n'est stocké. CSP : `connect-src 'self' https://data.geopf.fr`. Politique de confidentialité mise à jour. Aucun calcul de prix ni de distance.
+
 ## Sprint 2 — finition premium et conversion (24/11/2026)
 
 **Visuel** : illustrations SVG de camions supprimées (schéma technique du plateau conservé). Emplacements photo remplaçables pour chaque prestation (hero, mini-pelle, nacelle, compacteur, matériel, véhicule, plateau, pros) via `site.json` ; cadre neutre tant que la photo manque. Hero recomposé (texte + grande photo + bloc orange décalé), titres en casse normale (majuscules supprimées), espacements et hiérarchie revus, header agrandi.

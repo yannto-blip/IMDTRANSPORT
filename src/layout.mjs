@@ -68,6 +68,21 @@ const TYPES = [
   ['compacteur', 'Compacteur / rouleau'], ['echafaudage', 'Échafaudage'], ['materiel', 'Poutres IPN / matériel de construction'],
   ['vehicules', 'Véhicule utilitaire'], ['nonroulant', 'Véhicule non roulant'], ['autre', 'Autre']
 ];
+
+// Champ adresse avec autocomplétion IGN (amélioration progressive : la saisie libre reste toujours possible)
+const addrField = (id, label) => `
+        <div class="qf-addr">
+          <div class="qf ac" data-ac>
+            <label for="qf-${id}" id="qf-${id}-label">${label} <span class="req" aria-hidden="true">*</span></label>
+            <input id="qf-${id}" name="${id}" type="text" maxlength="200" required aria-required="true" aria-describedby="qf-${id}-err" placeholder="Adresse, ville ou code postal" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="qf-${id}-list">
+            <ul class="ac-list" id="qf-${id}-list" role="listbox" aria-labelledby="qf-${id}-label" hidden></ul>
+            <span class="sr" aria-live="polite" data-ac-live></span>
+            <p class="qf-err" id="qf-${id}-err" hidden>Indiquez le ${label.toLowerCase()}.</p>
+          </div>
+          <div class="qf"><label for="qf-${id}-extra">Complément d'adresse / accès chantier <span class="opt">(facultatif)</span></label>
+            <input id="qf-${id}-extra" name="${id}Extra" type="text" maxlength="160" autocomplete="off" placeholder="Entreprise, portail, bâtiment, entrée PL, zone de chargement…"></div>
+        </div>`;
+
 export const quoteForm = (svc = 'general', { title = 'Demande de devis', intro = '' } = {}) => {
   const pre = { minipelle: 'minipelle', nacelle: 'nacelle', engins: 'engins', materiel: 'materiel', vehicules: 'vehicules' }[svc] || '';
   return `
@@ -78,7 +93,7 @@ export const quoteForm = (svc = 'general', { title = 'Demande de devis', intro =
       <h2 id="devis-t" class="h2">${title}</h2>
       <p>${intro || 'Pas disponible au téléphone ? Décrivez votre transport : votre demande nous arrive structurée, par WhatsApp ou par e-mail, et nous la traitons dès que possible.'}</p>
       <ol class="quote-steps">
-        <li><b>Remplissez</b> les informations que vous connaissez.</li>
+        <li><b>Remplissez</b> les informations que vous connaissez : les adresses vous sont suggérées au fil de la saisie.</li>
         <li><b>Choisissez WhatsApp ou e-mail</b> : votre message s'ouvre, prêt à partir.</li>
         <li><b>Joignez vos photos</b> si besoin, puis <b>envoyez</b> depuis WhatsApp ou votre messagerie.</li>
       </ol>
@@ -103,14 +118,9 @@ export const quoteForm = (svc = 'general', { title = 'Demande de devis', intro =
       </fieldset>
       <fieldset>
         <legend>Le trajet</legend>
-        <div class="qf-row">
-          <div class="qf"><label for="qf-from">Lieu de chargement <span class="req" aria-hidden="true">*</span></label>
-            <input id="qf-from" name="from" type="text" maxlength="160" required aria-required="true" aria-describedby="qf-from-err" placeholder="Ville ou adresse" autocomplete="off">
-            <p class="qf-err" id="qf-from-err" hidden>Indiquez le lieu de chargement.</p></div>
-          <div class="qf"><label for="qf-to">Lieu de livraison <span class="req" aria-hidden="true">*</span></label>
-            <input id="qf-to" name="to" type="text" maxlength="160" required aria-required="true" aria-describedby="qf-to-err" placeholder="Ville ou adresse" autocomplete="off">
-            <p class="qf-err" id="qf-to-err" hidden>Indiquez le lieu de livraison.</p></div>
-        </div>
+        ${addrField('from', 'Lieu de prise en charge')}
+        ${addrField('to', 'Lieu de livraison')}
+        <p class="qf-hint">Suggestions d'adresses fournies par la Géoplateforme IGN (France métropolitaine). Vous pouvez aussi saisir librement une adresse ou un chantier non référencé. Une adresse trouvée ne garantit pas l'accès d'un poids lourd : précisez les conditions d'accès.</p>
         <div class="qf qf-half"><label for="qf-date">Date souhaitée <span class="opt">(facultatif)</span></label>
           <input id="qf-date" name="date" type="date"></div>
       </fieldset>
