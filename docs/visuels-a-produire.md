@@ -1,4 +1,8 @@
-# Visuels à produire
+# Visuels
+
+> **24/11/2026** : 6 visuels IA intégrés (tous les emplacements sont remplis, `pros` réutilise le visuel matériel). Le tableau ci-dessous reste valable pour les remplacer par de vraies photos de la flotte.
+
+## Prompts / consignes
 
 Aucune génération d'image payante n'a été lancée. Les illustrations SVG de camions ont été retirées (sprint 2). Chaque emplacement affiche un cadre neutre tant que la photo n'est pas fournie ; il se remplit dans `src/data/site.json` → `images` (clé indiquée ci-dessous), sans toucher à la structure.
 

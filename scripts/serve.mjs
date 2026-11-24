@@ -2,6 +2,7 @@
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { join, extname } from 'node:path';
+import { gzipSync } from 'node:zlib';
 
 const ROOT = new URL('../dist/', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.avif': 'image/avif', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.xml': 'application/xml', '.txt': 'text/plain; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json' };
@@ -13,8 +14,10 @@ createServer(async (req, res) => {
   let file = join(ROOT, path === '/' ? 'index.html' : path);
   if (!(await exists(file)) && await exists(file + '.html')) file += '.html';
   if (await exists(file)) {
-    res.writeHead(200, { 'Content-Type': TYPES[extname(file)] || 'application/octet-stream' });
-    res.end(await readFile(file));
+    const body = await readFile(file), type = TYPES[extname(file)] || 'application/octet-stream';
+    if (/text|javascript|xml|json|svg/.test(type) && /gzip/.test(req.headers['accept-encoding'] || '')) {
+      res.writeHead(200, { 'Content-Type': type, 'Content-Encoding': 'gzip' }); res.end(gzipSync(body));
+    } else { res.writeHead(200, { 'Content-Type': type }); res.end(body); }
   } else {
     res.writeHead(404, { 'Content-Type': TYPES['.html'] });
     res.end(await readFile(join(ROOT, '404.html')));

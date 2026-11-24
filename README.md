@@ -31,9 +31,9 @@ Tout est dans `src/data/site.json` → bloc `contact` (téléphone affiché, for
 ## Ajouter / remplacer les photos
 
 Chaque prestation a un emplacement photo (`site.json` → `images` : hero, minipelle, nacelle, compacteur, materiel, vehicule, plateau, pros). Tant que `src` est vide, un cadre neutre « Photo — … » s'affiche.
-1. Exporter la photo en WebP, 1600 px de large, qualité ~78, idéalement < 200 Ko (ex. `cwebp -q 78 -resize 1600 0 photo.jpg -o hero.webp`).
-2. La déposer dans `src/assets/img/photos/`.
-3. Dans `site.json`, renseigner `src` (`/assets/img/photos/hero.webp`), `w`, `h` réels et un `alt` descriptif. `illustrative: true` affiche « Illustration non contractuelle » (images IA) ; `false` pour une vraie photo de la flotte.
+1. Exporter la photo en WebP en trois largeurs nommées `nom-640.webp`, `nom-800.webp`, `nom-1600.webp` (qualité ~70–76, < 200 Ko pour la 1600 ; ex. `cwebp -q 74 -resize 800 0 photo.jpg -o nom-800.webp`).
+2. Les déposer dans `src/assets/img/photos/`.
+3. Dans `site.json`, renseigner `src` (`/assets/img/photos/nom-1600.webp` : le `srcset` 640/800/1600 est généré automatiquement), `w`, `h` réels et un `alt` descriptif. `illustrative: true` affiche « Illustration non contractuelle » (images IA) ; `false` pour une vraie photo de la flotte.
 4. `node build.mjs`. La photo hero est chargée en priorité, les autres en différé.
 
 ## Logos

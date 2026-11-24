@@ -86,7 +86,7 @@ const crumbs = (...items) => [{ name: 'Accueil', path: '/' }, ...items];
 // ---------- Cartes prestations (accueil) ----------
 const CARDS = [
   { href: '/transport-mini-pelle', img: 'minipelle', t: 'Engins BTP et mini-pelles', d: 'Mini-pelles et engins de chantier compatibles avec nos plateaux.' },
-  { href: '/transport-nacelle', img: 'nacelle', t: 'Nacelles et plateformes élévatrices', d: 'Nacelles à ciseaux, plateformes élévatrices, chargées par rampes.' },
+  { href: '/transport-nacelle', img: 'nacelle', t: 'Nacelles et plateformes élévatrices', d: 'Nacelles articulées ou à ciseaux, chargées par rampes.' },
   { href: '/transport-engins-chantier#compacteurs', img: 'compacteur', t: 'Compacteurs', d: 'Rouleaux compresseurs et compacteurs, arrimés et calés.' },
   { href: '/transport-materiel-btp', img: 'materiel', t: 'Matériel de chantier', d: 'Échafaudages, poutres IPN, matériel de construction.' },
   { href: '/transport-vehicules', img: 'vehicule', t: 'Véhicules utilitaires', d: 'Utilitaires, véhicules roulants ou non roulants selon faisabilité.' }
@@ -109,7 +109,7 @@ export const pages = [
     title: 'Transport d\'engins et matériel BTP sur camion plateau | IMD Transport',
     description: 'Transport de mini-pelles, nacelles, compacteurs, matériel de chantier et véhicules sur poids lourds plateau en Île-de-France. Jusqu\'à 16 t, plateau de 10 m.',
     h1: 'Vous construisez. Nous transportons.',
-    bodyClass: 'home', service: 'general', faq: ALL_FAQ,
+    bodyClass: 'home', service: 'general', faq: ALL_FAQ, heroImg: 'hero',
     body: p => `
 <section class="hero">
   <div class="wrap hero-grid">
@@ -120,7 +120,7 @@ export const pages = [
       ${ctaPair('hero', 'general', { size: 'btn-lg' })}
       <a class="link-arrow quote-link" href="#devis">Pas le temps d'appeler ? Demandez un devis par formulaire ${ICON.arrow}</a>
     </div>
-    <div class="hero-media">${photo('hero', { eager: true, cls: 'hero-photo' })}</div>
+    <div class="hero-media">${photo('hero', { eager: true, cls: 'hero-photo', sizes: '(min-width: 1000px) 560px, 100vw' })}</div>
   </div>
 </section>
 
@@ -148,7 +148,7 @@ export const pages = [
     <ul class="cards">
       ${CARDS.map(c => `<li class="card">
         <a href="${c.href}" class="card-link">
-          ${photo(c.img, { cls: 'card-photo' })}
+          ${photo(c.img, { cls: 'card-photo', sizes: '(min-width: 1040px) 400px, (min-width: 640px) 50vw, 100vw' })}
           <span class="card-body"><span class="card-t">${c.t}</span><span class="card-d">${c.d}</span><span class="card-more">Voir la prestation ${ICON.arrow}</span></span>
         </a></li>`).join('')}
     </ul>
@@ -216,7 +216,7 @@ ${contactBlock('general', 'contact_final')}`
 
   // ------------------------------------------------------------- ENGINS
   {
-    path: '/transport-engins-chantier', file: 'transport-engins-chantier.html',
+    path: '/transport-engins-chantier', heroImg: 'minipelle', file: 'transport-engins-chantier.html',
     title: 'Transport d\'engins de chantier en Île-de-France | IMD Transport',
     description: 'Transport et transfert d\'engins de chantier sur camion plateau : mini-pelles, nacelles, compacteurs, rouleaux. Jusqu\'à 16 t, plateau de 10 m, rampes et treuil.',
     h1: 'Transport d\'engins de chantier en Île-de-France',
@@ -261,7 +261,7 @@ ${contactBlock(p.service, 'contact_page', 'Un engin à transférer ?')}`
 
   // ------------------------------------------------------------- MINI-PELLE
   {
-    path: '/transport-mini-pelle', file: 'transport-mini-pelle.html',
+    path: '/transport-mini-pelle', heroImg: 'minipelle', file: 'transport-mini-pelle.html',
     title: 'Transport de mini-pelle sur camion plateau — Île-de-France | IMD Transport',
     description: 'Transport de mini-pelle en Île-de-France sur poids lourd plateau avec rampes et treuil. Devis par téléphone ou WhatsApp selon modèle, poids et adresses.',
     h1: 'Transport de mini-pelle',
@@ -299,21 +299,21 @@ ${contactBlock(p.service, 'contact_page', 'Une mini-pelle à transporter ?')}`
 
   // ------------------------------------------------------------- NACELLE
   {
-    path: '/transport-nacelle', file: 'transport-nacelle.html',
+    path: '/transport-nacelle', heroImg: 'nacelle', file: 'transport-nacelle.html',
     title: 'Transport de nacelle élévatrice en Île-de-France | IMD Transport',
     description: 'Transport de nacelles élévatrices à ciseaux et plateformes élévatrices sur camion plateau en Île-de-France. Chargement par rampes, arrimage sécurisé.',
     h1: 'Transport de nacelle élévatrice',
     crumbs: crumbs({ name: 'Engins de chantier', path: '/transport-engins-chantier' }, { name: 'Transport de nacelle', path: '/transport-nacelle' }),
     service: 'nacelle', serviceName: 'Transport de nacelle élévatrice', faq: [FAQ.minipelle, FAQ.grue, FAQ.regulier, FAQ.devis],
     body: p => `
-${pageHero(p, 'nacelle', 'Nacelles à ciseaux, plateformes élévatrices mobiles de personnes : nous les livrons sur vos chantiers et les reprenons en fin de location.')}
+${pageHero(p, 'nacelle', 'Nacelles articulées ou à ciseaux, plateformes élévatrices mobiles de personnes : nous les livrons sur vos chantiers et les reprenons en fin de location.')}
 <section class="section">
   <div class="wrap prose-grid">
     <div class="prose">
       <h2 class="h2">Livraison et reprise de nacelles</h2>
       <p>Les nacelles et plateformes élévatrices sont chargées par roulage sur les rampes, puis arrimées sur le plateau. Nos véhicules n'ont pas de grue embarquée.</p>
       <ul class="checks">
-        <li>Nacelles élévatrices à ciseaux</li>
+        <li>Nacelles élévatrices articulées et à ciseaux</li>
         <li>Plateformes élévatrices compatibles avec nos plateaux</li>
         <li>Transferts entre agences de location et chantiers</li>
         <li>Livraisons de jour comme de nuit, du lundi au samedi, selon disponibilités</li>
@@ -334,7 +334,7 @@ ${contactBlock(p.service, 'contact_page', 'Une nacelle à livrer ?')}`
 
   // ------------------------------------------------------------- MATÉRIEL BTP
   {
-    path: '/transport-materiel-btp', file: 'transport-materiel-btp.html',
+    path: '/transport-materiel-btp', heroImg: 'materiel', file: 'transport-materiel-btp.html',
     title: 'Transport de matériel BTP : échafaudages, poutres IPN | IMD Transport',
     description: 'Transport de matériel de chantier en Île-de-France sur plateau de 10 m : échafaudages, poutres IPN, matériel de construction. Transport ponctuel ou régulier.',
     h1: 'Transport de matériel de chantier et BTP',
@@ -370,7 +370,7 @@ ${contactBlock(p.service, 'contact_page', 'Du matériel à déplacer ?')}`
 
   // ------------------------------------------------------------- VÉHICULES
   {
-    path: '/transport-vehicules', file: 'transport-vehicules.html',
+    path: '/transport-vehicules', heroImg: 'vehicule', file: 'transport-vehicules.html',
     title: 'Transport de véhicule utilitaire ou non roulant sur plateau | IMD Transport',
     description: 'Transport de véhicules utilitaires, roulants ou non roulants (sous réserve de faisabilité) sur poids lourd plateau avec rampes et treuil, en Île-de-France.',
     h1: 'Transport de véhicules utilitaires',
@@ -404,7 +404,7 @@ ${contactBlock(p.service, 'contact_page', 'Un véhicule à transporter ?')}`
 
   // ------------------------------------------------------------- PROS
   {
-    path: '/transport-professionnels', file: 'transport-professionnels.html',
+    path: '/transport-professionnels', heroImg: 'pros', file: 'transport-professionnels.html',
     title: 'Transport régulier de matériel BTP pour professionnels | IMD Transport',
     description: 'Solutions de transport pour loueurs de matériel, entreprises du BTP, artisans et gestionnaires de flottes : tournées, transferts entre chantiers, besoins réguliers.',
     h1: 'Solutions de transport pour les professionnels',
@@ -451,7 +451,7 @@ ${contactBlock(p.service, 'contact_page', 'Un besoin régulier ?')}`
 
   // ------------------------------------------------------------- MOYENS
   {
-    path: '/nos-moyens-techniques', file: 'nos-moyens-techniques.html',
+    path: '/nos-moyens-techniques', heroImg: 'plateau', file: 'nos-moyens-techniques.html',
     title: 'Camion plateau 16 tonnes, 10 mètres : nos moyens techniques | IMD Transport',
     description: 'Poids lourds porteurs plateau DAF et Iveco : plateau de 10 m × 2,48 m, jusqu\'à 16 tonnes, rampes de chargement et treuil, sans grue embarquée.',
     h1: 'Nos moyens techniques',

@@ -110,70 +110,70 @@
     }
   ],
   "images": {
-    "_comment": "Emplacements photos. Déposer le fichier WebP dans /src/assets/img/photos/ et renseigner src (+ w/h réels). Tant que src est vide, un emplacement neutre s'affiche. illustrative=true affiche la mention « Illustration non contractuelle » (images IA).",
+    "_comment": "Visuels IA photoréalistes fournis le 24/11/2026 (illustrative=true → mention « Illustration non contractuelle »). Chaque photo existe en -800.webp et -1600.webp (srcset automatique). Remplacer par de vraies photos de la flotte dès que possible.",
     "hero": {
-      "src": "",
+      "src": "/assets/img/photos/minipelle-1600.webp",
       "w": 1600,
-      "h": 1067,
-      "alt": "Poids lourd porteur plateau blanc transportant une mini-pelle arrimée",
+      "h": 900,
+      "alt": "Poids lourd porteur plateau DAF blanc transportant une mini-pelle arrimée, rampes relevées, devant un chantier",
       "label": "Photo hero — porteur plateau blanc chargé d'une mini-pelle",
-      "illustrative": false
+      "illustrative": true
     },
     "minipelle": {
-      "src": "",
+      "src": "/assets/img/photos/minipelle-1600.webp",
       "w": 1600,
-      "h": 1067,
-      "alt": "Mini-pelle arrimée sur le plateau d'un poids lourd",
+      "h": 900,
+      "alt": "Mini-pelle arrimée par chaînes sur le plateau d'un porteur DAF blanc",
       "label": "Photo — mini-pelle sur plateau",
-      "illustrative": false
+      "illustrative": true
     },
     "nacelle": {
-      "src": "",
+      "src": "/assets/img/photos/nacelle-1600.webp",
       "w": 1600,
-      "h": 1067,
-      "alt": "Nacelle élévatrice à ciseaux arrimée sur un camion plateau",
+      "h": 900,
+      "alt": "Nacelle élévatrice articulée orange sanglée sur le plateau d'un porteur Iveco blanc",
       "label": "Photo — nacelle élévatrice sur plateau",
-      "illustrative": false
+      "illustrative": true
     },
     "compacteur": {
-      "src": "",
+      "src": "/assets/img/photos/compacteur-1600.webp",
       "w": 1600,
-      "h": 1067,
-      "alt": "Compacteur arrimé sur un camion plateau",
+      "h": 900,
+      "alt": "Compacteur monocylindre sanglé sur le plateau d'un porteur DAF blanc",
       "label": "Photo — compacteur sur plateau",
-      "illustrative": false
+      "illustrative": true
     },
     "materiel": {
-      "src": "",
+      "src": "/assets/img/photos/materiel-1600.webp",
       "w": 1600,
-      "h": 1067,
-      "alt": "Échafaudages et poutres IPN sanglés sur un camion plateau",
+      "h": 900,
+      "alt": "Porteur plateau Iveco blanc chargé d'échafaudages et de poutres IPN sanglés",
       "label": "Photo — échafaudages et poutres IPN",
-      "illustrative": false
+      "illustrative": true
     },
     "vehicule": {
-      "src": "",
+      "src": "/assets/img/photos/vehicule-1600.webp",
       "w": 1600,
-      "h": 1067,
-      "alt": "Véhicule utilitaire arrimé sur un camion plateau",
+      "h": 900,
+      "alt": "Fourgon utilitaire blanc sanglé sur le plateau d'un porteur DAF blanc",
       "label": "Photo — véhicule utilitaire sur plateau",
-      "illustrative": false
+      "illustrative": true
     },
     "plateau": {
-      "src": "",
+      "src": "/assets/img/photos/plateau-1600.webp",
       "w": 1600,
-      "h": 1067,
-      "alt": "Poids lourd porteur plateau vide, rampes arrière et treuil",
+      "h": 900,
+      "alt": "Porteur plateau Iveco blanc à vide : plateau long, treuil à l'avant, rampes arrière relevées",
       "label": "Photo — plateau vide, rampes et treuil",
-      "illustrative": false
+      "illustrative": true
     },
     "pros": {
-      "src": "",
+      "src": "/assets/img/photos/materiel-1600.webp",
       "w": 1600,
-      "h": 1067,
-      "alt": "Camion plateau en livraison sur un chantier",
+      "h": 900,
+      "alt": "Porteur plateau chargé de matériel de chantier sur un site logistique",
       "label": "Photo — livraison sur chantier",
-      "illustrative": false
+      "illustrative": true
     }
   },
   "analytics": {

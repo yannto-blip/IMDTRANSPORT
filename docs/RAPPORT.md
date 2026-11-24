@@ -18,6 +18,10 @@
 
 **Plan Vercel** : l'API de facturation répond « plan not found » pour l'équipe, ce qui indique très probablement l'offre Hobby (usage non commercial). La preview de revue est possible techniquement ; la mise en production commerciale sur Hobby reste non conforme aux conditions Vercel (options : Pro 20 $/mois, ou Cloudflare Pages / Netlify gratuits).
 
+**Visuels intégrés (24/11, 19 h 30)** : 6 visuels IA fournis → WebP 640/800/1600 px (28 à 198 Ko), `srcset` responsive, photo hero préchargée, autres en différé, mention « Illustration non contractuelle ». Affectation : mini-pelle DAF → hero + mini-pelle + engins ; compacteur DAF → compacteurs ; fourgon DAF → véhicules ; matériel Iveco → matériel BTP + pros ; Iveco vide → moyens techniques ; nacelle Iveco → nacelles (nacelle **articulée** : textes ajustés « articulées ou à ciseaux »).
+Points de vigilance sur les visuels : logo **Renault** visible sur le fourgon (marque tierce, à flouter ou remplacer si souhaité) ; pseudo-inscriptions générées par l'IA sur la pelle et la calandre Iveco (illisibles de loin) ; essieux multiples (4 essieux sur certains porteurs) : cohérent avec un porteur lourd mais pas forcément identique à la flotte réelle.
+Lighthouse mobile (local, gzip, 3 passages) : accueil Perf 94–97, LCP 2,4–2,8 s (simulation 4G lente), CLS 0 ; pages prestations Perf 99–100, LCP ≈ 1,8–2,3 s. Accessibilité, bonnes pratiques et SEO : 100. Les mesures terrain (Core Web Vitals réels) viendront de la Search Console après mise en ligne.
+
 ---
 
 # Sprint 1

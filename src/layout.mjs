@@ -38,11 +38,11 @@ export const ctaPair = (loc, svc = 'general', { size = '' } = {}) => `
 export const mailLink = loc => `<a class="link-mail" href="${mailHref}" data-track="click_email" data-loc="${loc}">${ICON.mail}<span>${esc(C.email)}</span></a>`;
 
 // ---------- Photos (emplacements remplaçables via site.json) ----------
-export const photo = (key, { eager = false, cls = '' } = {}) => {
+export const photo = (key, { eager = false, cls = '', sizes = '(min-width: 1000px) 50vw, 100vw' } = {}) => {
   const im = site.images[key];
   if (!im.src) return `<div class="ph ${cls}" aria-hidden="true"><span class="ph-in"><svg class="ph-ico" viewBox="0 0 24 24"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1 2v8.6l4-4 3 3 2.5-2.5L19 16.6V7H5Zm10.5 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/></svg><span>${esc(im.label)}</span></span></div>`;
   return `<figure class="photo ${cls}">
-  <img src="${im.src}" width="${im.w}" height="${im.h}" alt="${esc(im.alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
+  <img src="${im.src}"${/-1600\.webp$/.test(im.src) ? ` srcset="${im.src.replace('-1600.webp', '-640.webp')} 640w, ${im.src.replace('-1600.webp', '-800.webp')} 800w, ${im.src} 1600w" sizes="${sizes}"` : ''} width="${im.w}" height="${im.h}" alt="${esc(im.alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
   ${im.illustrative ? '<figcaption class="fig-tag">Illustration non contractuelle</figcaption>' : ''}
 </figure>`;
 };
@@ -289,8 +289,7 @@ ${page.noindex ? '' : `<link rel="canonical" href="${url}">`}
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/assets/fonts/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="${assets.css}">
+${page.heroImg && site.images[page.heroImg].src ? (() => { const s = site.images[page.heroImg].src; return `<link rel="preload" as="image" href="${s}" imagesrcset="${s.replace('-1600.webp', '-640.webp')} 640w, ${s.replace('-1600.webp', '-800.webp')} 800w, ${s} 1600w" imagesizes="${page.path === '/' ? '(min-width: 1000px) 560px, 100vw' : '(min-width: 1000px) 50vw, 100vw'}" fetchpriority="high">\n`; })() : ''}<link rel="stylesheet" href="${assets.css}">
 ${jsonld.map(j => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, '\\u003c')}</script>`).join('\n')}
 <script src="${assets.js}" defer></script>
 </head>
