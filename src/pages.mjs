@@ -1,6 +1,6 @@
 // Contenu des pages. Chaque page : path, title, description, h1, crumbs, service, faq, body().
 // Pour modifier un texte : éditer ce fichier puis lancer `node build.mjs`.
-import { site, esc, ctaPair, mailLink, figure, plateSchema, idfMap, breadcrumb, ICON, SERVICES_NAV } from './layout.mjs';
+import { site, esc, ctaPair, mailLink, photo, quoteForm, plateSchema, idfMap, breadcrumb, ICON, SERVICES_NAV } from './layout.mjs';
 
 const S = site.specs;
 const DEPS = site.departments;
@@ -41,7 +41,7 @@ const contactBlock = (svc = 'general', loc = 'contact_final', title = 'Un transp
     </div>
     <div class="cf-actions">
       ${ctaPair(loc, svc, { size: 'btn-lg' })}
-      <p class="cf-mail">Ou par e-mail : ${mailLink(loc)}</p>
+      <p class="cf-mail"><a href="${svc === 'general' && loc === 'contact_page' ? '/#devis' : '#devis'}">Formulaire de devis</a> · Par e-mail : ${mailLink(loc)}</p>
     </div>
   </div>
 </section>`;
@@ -55,8 +55,9 @@ const pageHero = (p, figKey, intro) => `
         <h1 class="h1">${p.h1}</h1>
         <p class="lead">${intro}</p>
         ${ctaPair('page_hero', p.service)}
+        <a class="link-arrow quote-link" href="${p.service === 'general' ? '/#devis' : '#devis'}">Demander un devis via le formulaire ${ICON.arrow}</a>
       </div>
-      ${figure(figKey, { eager: true, cls: 'phero-fig' })}
+      ${photo(figKey, { eager: true, cls: 'phero-fig' })}
     </div>
   </div>
 </section>`;
@@ -113,22 +114,19 @@ export const pages = [
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="hero-txt">
-      <p class="kicker">Transporteur sur poids lourds plateau — Île-de-France</p>
-      <h1 class="h1 hero-h1">Vous construisez.<br><span class="accent">Nous transportons.</span></h1>
+      <p class="kicker">Transport sur poids lourds plateau en Île-de-France</p>
+      <h1 class="h1 hero-h1">Vous construisez. <span class="accent">Nous transportons.</span></h1>
       <p class="lead">Transport d'engins, de matériel BTP et de véhicules sur camion plateau en Île-de-France, avec nos camions et nos chauffeurs.</p>
       ${ctaPair('hero', 'general', { size: 'btn-lg' })}
-      <p class="hero-note">Réponse directe, sans formulaire. Envoyez vos photos sur WhatsApp.</p>
+      <a class="link-arrow quote-link" href="#devis">Pas le temps d'appeler ? Demandez un devis par formulaire ${ICON.arrow}</a>
     </div>
-    ${figure('hero', { eager: true, cls: 'hero-fig' })}
+    <div class="hero-media">${photo('hero', { eager: true, cls: 'hero-photo' })}</div>
   </div>
 </section>
 
 <section class="keyfigs" aria-label="Chiffres clés">
   <ul class="wrap kf-list">
-    <li><strong>Jusqu'à 16 t</strong><span>de charge selon chargement</span></li>
-    <li><strong>Plateau 10 m</strong><span>2,48 m de largeur utile</span></li>
-    <li><strong>Jour &amp; nuit</strong><span>selon disponibilités</span></li>
-    <li><strong>Lundi → samedi</strong><span>transports planifiés</span></li>
+    ${site.keyfigs.map(k => `<li><strong class="kf-v">${esc(k.value)}</strong><span class="kf-l">${esc(k.label)}</span><span class="kf-n">${esc(k.note)}</span></li>`).join('')}
   </ul>
 </section>
 
@@ -136,7 +134,7 @@ export const pages = [
   <div class="wrap refs-in">
     <h2 id="refs-t" class="refs-h">Ils nous font confiance</h2>
     <ul class="refs-list">
-      ${site.references.map(r => `<li>${r.logo ? `<img src="${r.logo}" alt="${esc(r.name)}" loading="lazy" decoding="async">` : esc(r.name)}</li>`).join('')}
+      ${site.references.map(r => `<li>${r.logo ? `<img src="${r.logo}" alt="${esc(r.name)}" width="${Math.round(r.w * r.display / r.h)}" height="${r.display}" loading="lazy" decoding="async">` : esc(r.name)}</li>`).join('')}
     </ul>
   </div>
 </section>
@@ -150,7 +148,7 @@ export const pages = [
     <ul class="cards">
       ${CARDS.map(c => `<li class="card">
         <a href="${c.href}" class="card-link">
-          ${figure(c.img, { cls: 'card-fig' })}
+          ${photo(c.img, { cls: 'card-photo' })}
           <span class="card-body"><span class="card-t">${c.t}</span><span class="card-d">${c.d}</span><span class="card-more">Voir la prestation ${ICON.arrow}</span></span>
         </a></li>`).join('')}
     </ul>
@@ -178,7 +176,7 @@ export const pages = [
       <h2 id="why-t" class="h2">Vos engins. Nos camions. Nos chauffeurs.</h2>
     </div>
     <ul class="why-grid">
-      ${WHY.map(([t, d], i) => `<li><span class="why-n" aria-hidden="true">0${i + 1}</span><h3 class="h4">${t}</h3><p>${d}</p></li>`).join('')}
+      ${WHY.map(([t, d], i) => `<li><span class="why-n" aria-hidden="true"></span><h3 class="h4">${t}</h3><p>${d}</p></li>`).join('')}
     </ul>
   </div>
 </section>
@@ -211,6 +209,7 @@ export const pages = [
   </div>
 </section>
 
+${quoteForm('general')}
 ${faqBlock(ALL_FAQ)}
 ${contactBlock('general', 'contact_final')}`
   },
@@ -254,7 +253,7 @@ ${pageHero(p, 'minipelle', 'Transferts d\'engins entre dépôts, agences de loca
     </aside>
   </div>
 </section>
-${figure('compacteur', { cls: 'wrap fig-wide' })}
+${quoteForm(p.service)}
 ${faqBlock(p.faq)}
 ${related(p.path)}
 ${contactBlock(p.service, 'contact_page', 'Un engin à transférer ?')}`
@@ -292,6 +291,7 @@ ${pageHero(p, 'minipelle', 'Livraison et reprise de mini-pelles entre agences de
     </aside>
   </div>
 </section>
+${quoteForm(p.service)}
 ${faqBlock(p.faq)}
 ${related(p.path)}
 ${contactBlock(p.service, 'contact_page', 'Une mini-pelle à transporter ?')}`
@@ -326,6 +326,7 @@ ${pageHero(p, 'nacelle', 'Nacelles à ciseaux, plateformes élévatrices mobiles
     </aside>
   </div>
 </section>
+${quoteForm(p.service)}
 ${faqBlock(p.faq)}
 ${related(p.path)}
 ${contactBlock(p.service, 'contact_page', 'Une nacelle à livrer ?')}`
@@ -361,6 +362,7 @@ ${pageHero(p, 'materiel', 'Échafaudages, poutres IPN, matériel de construction
     </aside>
   </div>
 </section>
+${quoteForm(p.service)}
 ${faqBlock(p.faq)}
 ${related(p.path)}
 ${contactBlock(p.service, 'contact_page', 'Du matériel à déplacer ?')}`
@@ -394,6 +396,7 @@ ${pageHero(p, 'vehicule', 'Véhicules utilitaires et véhicules roulants, ou non
     </aside>
   </div>
 </section>
+${quoteForm(p.service)}
 ${faqBlock(p.faq)}
 ${related(p.path)}
 ${contactBlock(p.service, 'contact_page', 'Un véhicule à transporter ?')}`
@@ -408,7 +411,7 @@ ${contactBlock(p.service, 'contact_page', 'Un véhicule à transporter ?')}`
     crumbs: crumbs({ name: 'Professionnels', path: '/transport-professionnels' }),
     service: 'pros', serviceName: 'Transport régulier de matériel pour professionnels', faq: [FAQ.regulier, FAQ.nuit, FAQ.assurance, FAQ.devis],
     body: p => `
-${pageHero(p, 'vide', 'Loueurs de matériel, entreprises du bâtiment et des travaux publics, artisans, gestionnaires de flottes : nous organisons vos transports ponctuels et réguliers.')}
+${pageHero(p, 'pros', 'Loueurs de matériel, entreprises du bâtiment et des travaux publics, artisans, gestionnaires de flottes : nous organisons vos transports ponctuels et réguliers.')}
 <section class="section">
   <div class="wrap">
     <h2 class="h2">Pour qui ?</h2>
@@ -441,6 +444,7 @@ ${pageHero(p, 'vide', 'Loueurs de matériel, entreprises du bâtiment et des tra
     </aside>
   </div>
 </section>
+${quoteForm(p.service, { title: 'Décrivez votre besoin' })}
 ${faqBlock(p.faq)}
 ${contactBlock(p.service, 'contact_page', 'Un besoin régulier ?')}`
   },
@@ -454,7 +458,7 @@ ${contactBlock(p.service, 'contact_page', 'Un besoin régulier ?')}`
     crumbs: crumbs({ name: 'Moyens techniques', path: '/nos-moyens-techniques' }),
     service: 'general', faq: [FAQ.poids, FAQ.dims, FAQ.grue, FAQ.nonroulant],
     body: p => `
-${pageHero(p, 'vide', 'Des poids lourds porteurs plateau DAF et Iveco, équipés de rampes et d\'un treuil, conduits par nos propres chauffeurs.')}
+${pageHero(p, 'plateau', 'Des poids lourds porteurs plateau DAF et Iveco, équipés de rampes et d\'un treuil, conduits par nos propres chauffeurs.')}
 <section class="section">
   <div class="wrap">
     <h2 class="h2">Caractéristiques des plateaux</h2>

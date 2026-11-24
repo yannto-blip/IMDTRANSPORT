@@ -37,13 +37,81 @@ export const ctaPair = (loc, svc = 'general', { size = '' } = {}) => `
 
 export const mailLink = loc => `<a class="link-mail" href="${mailHref}" data-track="click_email" data-loc="${loc}">${ICON.mail}<span>${esc(C.email)}</span></a>`;
 
-// ---------- Images ----------
-export const figure = (key, { eager = false, cls = '', caption = '' } = {}) => {
+// ---------- Photos (emplacements remplaçables via site.json) ----------
+export const photo = (key, { eager = false, cls = '' } = {}) => {
   const im = site.images[key];
-  return `<figure class="fig ${cls}">
+  if (!im.src) return `<div class="ph ${cls}" aria-hidden="true"><span class="ph-in"><svg class="ph-ico" viewBox="0 0 24 24"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1 2v8.6l4-4 3 3 2.5-2.5L19 16.6V7H5Zm10.5 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/></svg><span>${esc(im.label)}</span></span></div>`;
+  return `<figure class="photo ${cls}">
   <img src="${im.src}" width="${im.w}" height="${im.h}" alt="${esc(im.alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
-  ${im.illustrative ? '<figcaption class="fig-tag">Illustration non contractuelle</figcaption>' : (caption ? `<figcaption>${esc(caption)}</figcaption>` : '')}
+  ${im.illustrative ? '<figcaption class="fig-tag">Illustration non contractuelle</figcaption>' : ''}
 </figure>`;
+};
+
+// ---------- Formulaire de devis → WhatsApp (sans backend) ----------
+const TYPES = [
+  ['minipelle', 'Mini-pelle'], ['engins', 'Autre engin de chantier'], ['nacelle', 'Nacelle / plateforme élévatrice'],
+  ['compacteur', 'Compacteur / rouleau'], ['echafaudage', 'Échafaudage'], ['materiel', 'Poutres IPN / matériel de construction'],
+  ['vehicules', 'Véhicule utilitaire'], ['nonroulant', 'Véhicule non roulant'], ['autre', 'Autre']
+];
+export const quoteForm = (svc = 'general', { title = 'Demande de devis', intro = '' } = {}) => {
+  const pre = { minipelle: 'minipelle', nacelle: 'nacelle', engins: 'engins', materiel: 'materiel', vehicules: 'vehicules' }[svc] || '';
+  return `
+<section class="section quote" id="devis" aria-labelledby="devis-t">
+  <div class="wrap quote-grid">
+    <div class="quote-side">
+      <p class="kicker">Devis via WhatsApp</p>
+      <h2 id="devis-t" class="h2">${title}</h2>
+      <p>${intro || 'Pas disponible au téléphone ? Décrivez votre transport : votre demande arrive structurée sur notre WhatsApp et nous la traitons dès que possible.'}</p>
+      <ol class="quote-steps">
+        <li><b>Remplissez</b> les informations que vous connaissez.</li>
+        <li><b>WhatsApp s'ouvre</b> avec votre message prêt à partir.</li>
+        <li><b>Appuyez sur Envoyer</b> dans WhatsApp, et joignez vos photos dans la conversation.</li>
+      </ol>
+      <p class="small">Aucune donnée n'est enregistrée par ce site : le message ne part que lorsque vous l'envoyez depuis WhatsApp.</p>
+    </div>
+    <form class="qform" data-quote novalidate data-wa="${C.whatsapp}" data-svc="${svc}">
+      <p class="qf-req"><span aria-hidden="true">*</span> Champs obligatoires</p>
+      <fieldset>
+        <legend>Le matériel</legend>
+        <div class="qf-row">
+          <div class="qf"><label for="qf-type">Type de matériel</label>
+            <select id="qf-type" name="type"><option value="">Choisir…</option>${TYPES.map(([v, l]) => `<option value="${esc(l)}"${v === pre ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select></div>
+          <div class="qf"><label for="qf-model">Marque, modèle ou description</label>
+            <input id="qf-model" name="model" type="text" maxlength="160" autocomplete="off"></div>
+        </div>
+        <div class="qf-row">
+          <div class="qf"><label for="qf-weight">Poids <span class="opt">(facultatif)</span></label>
+            <input id="qf-weight" name="weight" type="text" maxlength="40" placeholder="ex. 2,5 t" autocomplete="off"></div>
+          <div class="qf"><label for="qf-dims">Dimensions <span class="opt">(facultatif)</span></label>
+            <input id="qf-dims" name="dims" type="text" maxlength="80" placeholder="L × l × h" autocomplete="off"></div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Le trajet</legend>
+        <div class="qf-row">
+          <div class="qf"><label for="qf-from">Lieu de chargement <span class="req" aria-hidden="true">*</span></label>
+            <input id="qf-from" name="from" type="text" maxlength="160" required aria-required="true" aria-describedby="qf-from-err" placeholder="Ville ou adresse" autocomplete="off">
+            <p class="qf-err" id="qf-from-err" hidden>Indiquez le lieu de chargement.</p></div>
+          <div class="qf"><label for="qf-to">Lieu de livraison <span class="req" aria-hidden="true">*</span></label>
+            <input id="qf-to" name="to" type="text" maxlength="160" required aria-required="true" aria-describedby="qf-to-err" placeholder="Ville ou adresse" autocomplete="off">
+            <p class="qf-err" id="qf-to-err" hidden>Indiquez le lieu de livraison.</p></div>
+        </div>
+        <div class="qf qf-half"><label for="qf-date">Date souhaitée <span class="opt">(facultatif)</span></label>
+          <input id="qf-date" name="date" type="date"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Vous</legend>
+        <div class="qf"><label for="qf-name">Nom ou société</label>
+          <input id="qf-name" name="name" type="text" maxlength="120" autocomplete="organization"></div>
+        <div class="qf"><label for="qf-info">Informations complémentaires</label>
+          <textarea id="qf-info" name="info" rows="3" maxlength="800" placeholder="Accès, horaires, engin roulant ou non…"></textarea></div>
+      </fieldset>
+      <button type="submit" class="btn btn-wa btn-lg qf-submit">${ICON.wa}<span>Transmettre ma demande sur WhatsApp</span></button>
+      <p class="qf-note">Vous pourrez joindre vos photos directement dans la conversation WhatsApp.</p>
+      <div class="qf-status" role="status" aria-live="polite" data-quote-status></div>
+    </form>
+  </div>
+</section>`;
 };
 
 // ---------- Schéma technique du plateau ----------
@@ -100,9 +168,12 @@ export const breadcrumb = items => `
 </ol></nav>`;
 
 // ---------- Logo ----------
-const logo = (where) => site.logo.src
-  ? `<img src="${site.logo.src}" width="${site.logo.width}" height="${site.logo.height}" alt="${esc(site.name)}" class="logo-img">`
-  : `<span class="wordmark${where === 'footer' ? ' wm-light' : ''}"><span class="wm-a">IMD</span> <span class="wm-b">Transport</span></span>`;
+const logo = (where) => {
+  const L = site.logo;
+  const h = where === 'footer' ? 72 : 64;
+  const w = Math.round(L.width * h / L.height);
+  return `<img src="${L.src}" srcset="${L.src} 1x, ${L.src2x} 2x" width="${w}" height="${h}" alt="${esc(site.name)} — ${esc(site.tagline)}" class="logo-img"${where === 'header' ? ' fetchpriority="high"' : ' loading="lazy"'}>`;
+};
 
 // ---------- Navigation ----------
 export const SERVICES_NAV = [
@@ -113,6 +184,7 @@ export const SERVICES_NAV = [
   { path: '/transport-vehicules', label: 'Véhicules' }
 ];
 const MAIN_NAV = [
+  { path: '/#devis', label: 'Devis' },
   { path: '/nos-moyens-techniques', label: 'Moyens techniques' },
   { path: '/transport-professionnels', label: 'Professionnels' },
   { path: '/zones-intervention', label: 'Zones' },
@@ -147,9 +219,8 @@ const footer = () => `
 <footer class="site-footer">
   <div class="wrap ftr">
     <div class="ftr-brand">
-      <a href="/" class="brand" aria-label="${esc(site.name)} — accueil">${logo('footer')}</a>
-      <p class="ftr-sign">« ${esc(site.tagline)} »</p>
-      <p>Transport d'engins, de matériel de chantier et de véhicules sur poids lourds plateau. Basée à ${esc(site.baseCity)} (${esc(site.basePostalCode.slice(0, 2))}), intervention dans toute l'Île-de-France.</p>
+      <a href="/" class="brand brand-card" aria-label="${esc(site.name)} — accueil">${logo('footer')}</a>
+            <p>Transport d'engins, de matériel de chantier et de véhicules sur poids lourds plateau. Basée à ${esc(site.baseCity)} (${esc(site.basePostalCode.slice(0, 2))}), intervention dans toute l'Île-de-France.</p>
     </div>
     <div>
       <p class="ftr-h">Contact</p>
@@ -190,7 +261,7 @@ const footer = () => `
 </div>`;
 
 // ---------- Document complet ----------
-export const documentHtml = ({ page, body, assets, jsonld }) => {
+export const documentHtml = ({ page, body, assets, jsonld, noindexAll = false }) => {
   const url = site.url + (page.path === '/' ? '/' : page.path);
   const og = site.url + '/assets/img/og-imd-transport.png';
   return `<!DOCTYPE html>
@@ -200,7 +271,7 @@ export const documentHtml = ({ page, body, assets, jsonld }) => {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(page.title)}</title>
 <meta name="description" content="${esc(page.description)}">
-${page.noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="index, follow, max-image-preview:large">'}
+${noindexAll ? '<meta name="robots" content="noindex, nofollow">' : page.noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="index, follow, max-image-preview:large">'}
 ${page.noindex ? '' : `<link rel="canonical" href="${url}">`}
 <meta name="theme-color" content="#171B20">
 <meta property="og:type" content="website">
@@ -214,7 +285,6 @@ ${page.noindex ? '' : `<link rel="canonical" href="${url}">`}
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="${esc(site.name)} — transport d'engins et de matériel BTP sur camion plateau">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">

@@ -53,6 +53,60 @@
     });
   });
 
+  /* ---------- Formulaire de devis → WhatsApp ----------
+     Aucun envoi serveur : le message est construit ici puis ouvert dans WhatsApp.
+     La demande n'est transmise que lorsque le client appuie sur « Envoyer » dans WhatsApp. */
+  function buildQuoteMessage(f) {
+    var v = function (n) { var el = f.elements[n]; return el ? String(el.value).replace(/\s+$/g, '').replace(/^\s+/g, '') : ''; };
+    var date = v('date');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) { var p = date.split('-'); date = p[2] + '/' + p[1] + '/' + p[0]; }
+    var rows = [
+      ['Type de matériel', v('type')], ['Marque / modèle', v('model')], ['Poids', v('weight')], ['Dimensions', v('dims')],
+      ['Lieu de chargement', v('from')], ['Lieu de livraison', v('to')], ['Date souhaitée', date], ['Nom / société', v('name')]
+    ];
+    var lines = ['Bonjour IMD Transport,', '', 'Je souhaite obtenir un devis pour un transport :', ''];
+    rows.forEach(function (r) { if (r[1]) lines.push('- ' + r[0] + ' : ' + r[1]); });
+    var info = v('info');
+    if (info) { lines.push('', 'Informations complémentaires :', info); }
+    lines.push('', 'Je peux vous envoyer des photos du matériel dans cette conversation.', '', 'Merci.');
+    return lines.join('\n');
+  }
+  window.IMD_buildQuoteMessage = buildQuoteMessage; // exposé pour les tests
+
+  Array.prototype.forEach.call(d.querySelectorAll('[data-quote]'), function (f) {
+    var status = f.querySelector('[data-quote-status]');
+    f.addEventListener('input', function (e) {
+      var el = e.target;
+      if (el.getAttribute('aria-invalid') === 'true' && el.value.trim()) {
+        el.removeAttribute('aria-invalid');
+        var err = d.getElementById(el.id + '-err'); if (err) err.hidden = true;
+      }
+    });
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var first = null;
+      ['from', 'to'].forEach(function (n) {
+        var el = f.elements[n], err = d.getElementById(el.id + '-err'), bad = !el.value.trim();
+        if (bad) { el.setAttribute('aria-invalid', 'true'); if (!first) first = el; } else el.removeAttribute('aria-invalid');
+        if (err) err.hidden = !bad;
+      });
+      if (first) {
+        status.textContent = 'Merci de renseigner les champs obligatoires : lieu de chargement et lieu de livraison.';
+        first.focus();
+        return;
+      }
+      if (window.IMD_ANALYTICS) (window.dataLayer = window.dataLayer || []).push({ event: 'submit_whatsapp_form', page_path: location.pathname, cta_location: 'form', service: f.getAttribute('data-svc') || '' });
+      var url = 'https://wa.me/' + f.getAttribute('data-wa') + '?text=' + encodeURIComponent(buildQuoteMessage(f));
+      status.innerHTML = '';
+      var p1 = d.createElement('p'); p1.textContent = 'WhatsApp s’ouvre avec votre demande pré-remplie. Elle ne nous parvient qu’après avoir appuyé sur « Envoyer » dans WhatsApp. Vous pourrez y joindre vos photos.';
+      var p2 = d.createElement('p'); var a = d.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = 'WhatsApp ne s’est pas ouvert ? Cliquez ici.'; p2.appendChild(a);
+      status.appendChild(p1); status.appendChild(p2);
+      if (window.matchMedia('(pointer: coarse)').matches) { window.location.href = url; }
+      else { window.open(url, '_blank', 'noopener'); }
+    });
+  });
+
   /* ---------- Suivi des intentions de contact ----------
      Aucun outil n'est chargé. Les événements sont poussés dans window.dataLayer
      uniquement si window.IMD_ANALYTICS est activé (après consentement).

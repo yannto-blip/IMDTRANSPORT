@@ -7,6 +7,8 @@ import { site, documentHtml } from './src/layout.mjs';
 import { pages } from './src/pages.mjs';
 
 const OUT = 'dist';
+// Prévisualisations Vercel (VERCEL_ENV=preview) : noindex partout + robots.txt bloquant.
+const IS_PREVIEW = process.env.VERCEL_ENV === 'preview' || process.env.IMD_PREVIEW === '1';
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
@@ -42,7 +44,7 @@ const org = {
   telephone: C.phoneIntl,
   email: C.email,
   image: `${site.url}/assets/img/og-imd-transport.png`,
-  ...(site.logo.src ? { logo: site.url + site.logo.src } : {}),
+  logo: site.url + site.logo.png,
   address: { '@type': 'PostalAddress', addressLocality: site.baseCity, postalCode: site.basePostalCode, addressRegion: 'Île-de-France', addressCountry: 'FR' },
   areaServed,
   vatID: site.legal.vat,
@@ -58,8 +60,8 @@ const serviceLd = p => ({ '@context': 'https://schema.org', '@type': 'Service', 
 
 // Typographie française : espaces fines insécables avant ? ! : ; » et après «, sans toucher aux balises.
 const typo = html => html
-  .replace(/>([^<]+)</g, (m, t) => '>' + t.replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« ') + '<')
-  .replace(/(<h[1-3][^>]*>[^]*?<\/h[1-3]>)/g, h => h.replace(/(l'Île-de-France|Île-de-France)/g, '<span class="nowrap">$1</span>'));
+  .replace(/>([^<]+)</g, (m, t) => '>' + t.replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« ').replace(/(\d) (t|m|m²|tonnes|mètres|km)(?![\wÀ-ÿ])/g, '$1 $2') + '<')
+  .replace(/(<h[1-3][^>]*>[^]*?<\/h[1-3]>|<p class="kicker[^"]*">[^]*?<\/p>)/g, h => h.replace(/(l'Île-de-France|Île-de-France)/g, '<span class="nowrap">$1</span>'));
 
 // 3. Pages
 const sitemap = [];
@@ -70,7 +72,7 @@ for (const p of pages) {
   if (p.crumbs) jsonld.push(crumbsLd(p.crumbs));
   if (p.serviceName) jsonld.push(serviceLd(p));
   if (p.faq?.length) jsonld.push(faqLd(p.faq));
-  const html = documentHtml({ page: p, body: typo(p.body(p)), assets, jsonld });
+  const html = documentHtml({ page: p, body: typo(p.body(p)), assets, jsonld, noindexAll: IS_PREVIEW });
   writeFileSync(join(OUT, p.file), html);
   if (p.sitemap !== false && !p.noindex) sitemap.push(site.url + (p.path === '/' ? '/' : p.path));
 }
@@ -82,7 +84,7 @@ ${sitemap.map(u => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`).jo
 </urlset>
 `);
 
-writeFileSync(join(OUT, 'robots.txt'), `# IMD Transport — robots.txt
+writeFileSync(join(OUT, 'robots.txt'), IS_PREVIEW ? 'User-agent: *\nDisallow: /\n' : `# IMD Transport — robots.txt
 # Moteurs de recherche et robots de recherche des assistants IA : autorisés.
 User-agent: *
 Allow: /
@@ -123,4 +125,4 @@ ${pages.filter(p => !p.noindex && !['/mentions-legales', '/politique-confidentia
 
 // 5. Rapport
 const size = dir => readdirSync(dir).reduce((s, f) => { const st = statSync(join(dir, f)); return s + (st.isDirectory() ? size(join(dir, f)) : st.size); }, 0);
-console.log(`✓ ${pages.length} pages générées dans ${OUT}/ (${(size(OUT) / 1024).toFixed(0)} Ko) — CSS ${assets.css}, JS ${assets.js}`);
+console.log(`${IS_PREVIEW ? '[PREVIEW noindex] ' : ''}✓ ${pages.length} pages générées dans ${OUT}/ (${(size(OUT) / 1024).toFixed(0)} Ko) — CSS ${assets.css}, JS ${assets.js}`);

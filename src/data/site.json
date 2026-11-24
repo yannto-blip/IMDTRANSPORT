@@ -16,10 +16,12 @@
   },
   "googleBusinessUrl": "",
   "logo": {
-    "_comment": "Laisser src vide tant que le logo officiel (PDF) n'a pas été converti en PNG transparent. Exemple : /assets/img/logo-imd-transport.png",
-    "src": "",
-    "width": 0,
-    "height": 0
+    "_comment": "Logo officiel (PDF Canva) converti en WebP/PNG transparent, sans modification du dessin ni des couleurs.",
+    "src": "/assets/img/logo-imd-transport.webp",
+    "src2x": "/assets/img/logo-imd-transport@2x.webp",
+    "png": "/assets/img/logo-imd-transport.png",
+    "width": 194,
+    "height": 112
   },
   "specs": {
     "maxLoad": "jusqu'à 16 tonnes",
@@ -28,35 +30,151 @@
     "deckWidth": "2,48 m",
     "deckArea": "24,8 m²",
     "brands": "DAF et Iveco",
-    "equipment": ["Rampes de chargement", "Treuil"],
+    "equipment": [
+      "Rampes de chargement",
+      "Treuil"
+    ],
     "noCrane": true,
     "schedule": "De jour comme de nuit, du lundi au samedi, selon les disponibilités"
   },
   "references": [
-    { "name": "Kiloutou", "logo": "" },
-    { "name": "Loxam", "logo": "" },
-    { "name": "Colas", "logo": "" },
-    { "name": "Bouygues Bâtiment", "logo": "" }
+    {
+      "name": "Kiloutou",
+      "logo": "/assets/img/logos/kiloutou.webp",
+      "w": 693,
+      "h": 96,
+      "display": 22
+    },
+    {
+      "name": "Loxam",
+      "logo": "/assets/img/logos/loxam.webp",
+      "w": 633,
+      "h": 96,
+      "display": 24
+    },
+    {
+      "name": "Colas",
+      "logo": "/assets/img/logos/colas.webp",
+      "w": 296,
+      "h": 96,
+      "display": 40
+    },
+    {
+      "name": "Bouygues Bâtiment",
+      "logo": "/assets/img/logos/bouygues-batiment.webp",
+      "w": 141,
+      "h": 96,
+      "display": 50
+    }
   ],
   "departments": [
-    { "code": "75", "name": "Paris", "seat": "Paris" },
-    { "code": "77", "name": "Seine-et-Marne", "seat": "Melun" },
-    { "code": "78", "name": "Yvelines", "seat": "Versailles" },
-    { "code": "91", "name": "Essonne", "seat": "Évry-Courcouronnes" },
-    { "code": "92", "name": "Hauts-de-Seine", "seat": "Nanterre" },
-    { "code": "93", "name": "Seine-Saint-Denis", "seat": "Bobigny" },
-    { "code": "94", "name": "Val-de-Marne", "seat": "Créteil" },
-    { "code": "95", "name": "Val-d'Oise", "seat": "Cergy" }
+    {
+      "code": "75",
+      "name": "Paris",
+      "seat": "Paris"
+    },
+    {
+      "code": "77",
+      "name": "Seine-et-Marne",
+      "seat": "Melun"
+    },
+    {
+      "code": "78",
+      "name": "Yvelines",
+      "seat": "Versailles"
+    },
+    {
+      "code": "91",
+      "name": "Essonne",
+      "seat": "Évry-Courcouronnes"
+    },
+    {
+      "code": "92",
+      "name": "Hauts-de-Seine",
+      "seat": "Nanterre"
+    },
+    {
+      "code": "93",
+      "name": "Seine-Saint-Denis",
+      "seat": "Bobigny"
+    },
+    {
+      "code": "94",
+      "name": "Val-de-Marne",
+      "seat": "Créteil"
+    },
+    {
+      "code": "95",
+      "name": "Val-d'Oise",
+      "seat": "Cergy"
+    }
   ],
   "images": {
-    "_comment": "Remplacer les illustrations SVG par de vraies photos (WebP) en changeant uniquement ces chemins. Mettre illustrative à false pour une photo authentique de la flotte.",
-    "hero":      { "src": "/assets/img/illus/camion-mini-pelle.svg", "w": 1200, "h": 520, "alt": "Illustration d'un poids lourd porteur plateau blanc transportant une mini-pelle arrimée", "illustrative": true },
-    "minipelle": { "src": "/assets/img/illus/camion-mini-pelle.svg", "w": 1200, "h": 520, "alt": "Illustration d'un camion plateau transportant une mini-pelle", "illustrative": true },
-    "nacelle":   { "src": "/assets/img/illus/camion-nacelle.svg", "w": 1200, "h": 520, "alt": "Illustration d'un camion plateau transportant une nacelle élévatrice à ciseaux", "illustrative": true },
-    "compacteur":{ "src": "/assets/img/illus/camion-compacteur.svg", "w": 1200, "h": 520, "alt": "Illustration d'un camion plateau transportant un compacteur", "illustrative": true },
-    "materiel":  { "src": "/assets/img/illus/camion-materiel.svg", "w": 1200, "h": 520, "alt": "Illustration d'un camion plateau chargé d'échafaudages et de poutres IPN", "illustrative": true },
-    "vehicule":  { "src": "/assets/img/illus/camion-utilitaire.svg", "w": 1200, "h": 520, "alt": "Illustration d'un camion plateau transportant un véhicule utilitaire", "illustrative": true },
-    "vide":      { "src": "/assets/img/illus/camion-vide.svg", "w": 1200, "h": 520, "alt": "Illustration d'un poids lourd porteur plateau vide avec rampes arrière et treuil", "illustrative": true }
+    "_comment": "Emplacements photos. Déposer le fichier WebP dans /src/assets/img/photos/ et renseigner src (+ w/h réels). Tant que src est vide, un emplacement neutre s'affiche. illustrative=true affiche la mention « Illustration non contractuelle » (images IA).",
+    "hero": {
+      "src": "",
+      "w": 1600,
+      "h": 1067,
+      "alt": "Poids lourd porteur plateau blanc transportant une mini-pelle arrimée",
+      "label": "Photo hero — porteur plateau blanc chargé d'une mini-pelle",
+      "illustrative": false
+    },
+    "minipelle": {
+      "src": "",
+      "w": 1600,
+      "h": 1067,
+      "alt": "Mini-pelle arrimée sur le plateau d'un poids lourd",
+      "label": "Photo — mini-pelle sur plateau",
+      "illustrative": false
+    },
+    "nacelle": {
+      "src": "",
+      "w": 1600,
+      "h": 1067,
+      "alt": "Nacelle élévatrice à ciseaux arrimée sur un camion plateau",
+      "label": "Photo — nacelle élévatrice sur plateau",
+      "illustrative": false
+    },
+    "compacteur": {
+      "src": "",
+      "w": 1600,
+      "h": 1067,
+      "alt": "Compacteur arrimé sur un camion plateau",
+      "label": "Photo — compacteur sur plateau",
+      "illustrative": false
+    },
+    "materiel": {
+      "src": "",
+      "w": 1600,
+      "h": 1067,
+      "alt": "Échafaudages et poutres IPN sanglés sur un camion plateau",
+      "label": "Photo — échafaudages et poutres IPN",
+      "illustrative": false
+    },
+    "vehicule": {
+      "src": "",
+      "w": 1600,
+      "h": 1067,
+      "alt": "Véhicule utilitaire arrimé sur un camion plateau",
+      "label": "Photo — véhicule utilitaire sur plateau",
+      "illustrative": false
+    },
+    "plateau": {
+      "src": "",
+      "w": 1600,
+      "h": 1067,
+      "alt": "Poids lourd porteur plateau vide, rampes arrière et treuil",
+      "label": "Photo — plateau vide, rampes et treuil",
+      "illustrative": false
+    },
+    "pros": {
+      "src": "",
+      "w": 1600,
+      "h": 1067,
+      "alt": "Camion plateau en livraison sur un chantier",
+      "label": "Photo — livraison sur chantier",
+      "illustrative": false
+    }
   },
   "analytics": {
     "_comment": "Aucun traceur actif. Renseigner ga4Id puis enabled=true seulement après validation RGPD (bandeau de consentement requis).",
@@ -81,5 +199,28 @@
       "address": "440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
       "url": "https://vercel.com"
     }
-  }
+  },
+  "_referencesNote": "Logos fournis par le client (fichiers transmis le 24/11/2026). Autorisation écrite d'usage de marque à obtenir auprès de chaque entreprise avant mise en production.",
+  "keyfigs": [
+    {
+      "value": "16 t",
+      "label": "Charge utile maximale",
+      "note": "Sous réserve de faisabilité"
+    },
+    {
+      "value": "10 m",
+      "label": "Longueur de plateau",
+      "note": "2,48 m de largeur utile"
+    },
+    {
+      "value": "Jour & nuit",
+      "label": "Transport sur demande",
+      "note": "Selon disponibilités"
+    },
+    {
+      "value": "6j/7",
+      "label": "Du lundi au samedi",
+      "note": "Transports planifiés"
+    }
+  ]
 }

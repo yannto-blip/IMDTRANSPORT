@@ -1,5 +1,27 @@
 # Rapport — refonte imdtransport.fr
 
+## Sprint 2 — finition premium et conversion (24/11/2026)
+
+**Visuel** : illustrations SVG de camions supprimées (schéma technique du plateau conservé). Emplacements photo remplaçables pour chaque prestation (hero, mini-pelle, nacelle, compacteur, matériel, véhicule, plateau, pros) via `site.json` ; cadre neutre tant que la photo manque. Hero recomposé (texte + grande photo + bloc orange décalé), titres en casse normale (majuscules supprimées), espacements et hiérarchie revus, header agrandi.
+
+**Logo officiel** : extrait du PDF (camion noir, « IMD TRANSPORT » bordeaux, signature), fond rendu transparent, recadré, WebP 1×/2× + PNG. Header, footer (cartouche blanc pour conserver les couleurs sur fond anthracite), données structurées (`logo`), favicon (camion du logo), image de partage. Charte orange inchangée. Remarque : le truck du logo est une image matricielle intégrée au PDF Canva (800 × 360 px) : rendu net jusqu'à ~2× la taille d'affichage du header, pas de version vectorielle exploitable.
+
+**Références** : logos Kiloutou, Loxam, Colas, Bouygues Bâtiment (fichiers fournis), détourés du fond, sur fond blanc, hauteurs équilibrées. Autorisations écrites des 4 marques **à obtenir** — voir `docs/autorisations.md`.
+
+**Formulaire de devis WhatsApp** : principe du Tally d'origine repris (matériel, adresses, date, nom) sans dépendance. Champs du cahier des charges ; seuls lieu de chargement et lieu de livraison sont obligatoires. Message structuré, champs vides omis, date JJ/MM/AAAA, ouverture `wa.me` ; le client confirme l'envoi dans WhatsApp et y joint ses photos. Aucun message de confirmation trompeur. Présent sur l'accueil, les 5 pages prestations et la page pros ; accès depuis le hero et chaque page prestation.
+
+**Chiffres clés** : 16 t / 10 m / Jour & nuit / 6j/7 avec les libellés demandés, 4 colonnes desktop, 2×2 mobile, valeurs jamais coupées de leur unité (espaces insécables automatiques dans tout le site).
+
+**Preview** : la branche est poussée ; build en mode preview = `noindex, nofollow` + robots.txt bloquant.
+
+**Tests sprint 2 (exécutés)** : contrôle automatique 13 pages ✓ ; aucun débordement 12 pages × 6 largeurs ✓ ; 0 erreur JS ✓ ; axe-core 0 violation ✓ ; formulaire : validation, focus, accents, apostrophes, symboles, retours à la ligne, encodage, date, champs vides, redirection mobile ✓ ; Lighthouse mobile (local, sans photos) accueil 100/100/100/100, LCP 1,1 s, 221 Ko. **Les performances devront être remesurées une fois les photos intégrées** (budget : hero WebP < 200 Ko).
+
+**Plan Vercel** : l'API de facturation répond « plan not found » pour l'équipe, ce qui indique très probablement l'offre Hobby (usage non commercial). La preview de revue est possible techniquement ; la mise en production commerciale sur Hobby reste non conforme aux conditions Vercel (options : Pro 20 $/mois, ou Cloudflare Pages / Netlify gratuits).
+
+---
+
+# Sprint 1
+
 Branche : `feat/imd-website-redesign` · Date : 24/11/2026 · Production **non modifiée**.
 
 ## 1. Audit de l'existant

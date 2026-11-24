@@ -28,13 +28,18 @@ Node 18 ou plus. Aucune installation (`npm install`) n'est nécessaire.
 
 Tout est dans `src/data/site.json` → bloc `contact` (téléphone affiché, format international, numéro WhatsApp sans `+`, e-mail). Relancer `node build.mjs` : header, boutons, barre mobile, footer, données structurées et `llms.txt` sont mis à jour.
 
-## Remplacer les images
+## Ajouter / remplacer les photos
 
-Les visuels actuels sont des **illustrations SVG provisoires** (marquées « Illustration non contractuelle »).
-1. Déposer la photo optimisée dans `src/assets/img/photos/` (WebP, ~1600 px de large, < 200 Ko).
-2. Dans `site.json` → `images`, changer `src`, `w`, `h`, `alt` de l'emplacement voulu et mettre `illustrative` à `false` s'il s'agit d'une photo authentique de la flotte.
+Chaque prestation a un emplacement photo (`site.json` → `images` : hero, minipelle, nacelle, compacteur, materiel, vehicule, plateau, pros). Tant que `src` est vide, un cadre neutre « Photo — … » s'affiche.
+1. Exporter la photo en WebP, 1600 px de large, qualité ~78, idéalement < 200 Ko (ex. `cwebp -q 78 -resize 1600 0 photo.jpg -o hero.webp`).
+2. La déposer dans `src/assets/img/photos/`.
+3. Dans `site.json`, renseigner `src` (`/assets/img/photos/hero.webp`), `w`, `h` réels et un `alt` descriptif. `illustrative: true` affiche « Illustration non contractuelle » (images IA) ; `false` pour une vraie photo de la flotte.
+4. `node build.mjs`. La photo hero est chargée en priorité, les autres en différé.
 
-Logo officiel : déposer le PNG transparent dans `src/assets/img/` et renseigner `logo.src`, `logo.width`, `logo.height`. Logos clients : champ `logo` de chaque entrée `references` (après accord écrit).
+## Logos
+
+- Logo officiel : `src/assets/img/logo-imd-transport(.webp|@2x.webp|.png)`, converti depuis le PDF fourni (dessin et couleurs inchangés, fond rendu transparent). Le footer le présente sur un cartouche blanc pour garder ses couleurs d'origine sur fond anthracite.
+- Logos clients : `src/assets/img/logos/`, déclarés dans `site.json` → `references` (`display` = hauteur affichée en px, à ajuster pour l'équilibre visuel).
 
 ## Modifier un texte
 
@@ -55,6 +60,14 @@ Le projet Vercel `imdtransport` est relié au dépôt GitHub.
 
 Réglages : `vercel.json` définit `buildCommand: node build.mjs` et `outputDirectory: dist`.
 
+## Formulaire de devis WhatsApp
+
+Formulaire HTML natif (accueil, pages prestations, page pros) : aucun backend ni service tiers. Au clic, `main.js` construit un message structuré (champs vides omis, date au format JJ/MM/AAAA) et ouvre `wa.me/<numéro>?text=…`. Le client confirme lui-même l'envoi dans WhatsApp et peut y joindre ses photos. Libellés et champs : `quoteForm()` dans `src/layout.mjs` ; construction du message : `buildQuoteMessage()` dans `src/assets/js/main.js`.
+
+## Prévisualisations
+
+Sur Vercel, chaque branche autre que `main` donne une preview. Le build détecte `VERCEL_ENV=preview` et ajoute `noindex, nofollow` sur toutes les pages + un `robots.txt` qui bloque tout. Pour tester ce mode en local : `IMD_PREVIEW=1 node build.mjs`.
+
 ## Mesure d'audience (désactivée)
 
 Aucun traceur n'est chargé. Les boutons portent des attributs `data-track` (`click_phone`, `click_whatsapp`, `click_email`) avec emplacement et prestation. Pour activer GA4/Google Ads : ajouter un bandeau de consentement conforme CNIL, charger gtag **après consentement**, définir `window.IMD_ANALYTICS = true`, et ajouter les domaines Google dans la CSP de `vercel.json`. Aucune donnée personnelle n'est transmise.
@@ -63,4 +76,4 @@ Aucun traceur n'est chargé. Les boutons portent des attributs `data-track` (`cl
 
 - Carte : tracés IGN Admin Express COG via [france-geojson](https://github.com/gregoiredavid/france-geojson), Licence Ouverte Etalab. Régénérer : `node scripts/build-map.mjs departements-version-simplifiee.geojson`.
 - Polices : Barlow Condensed et Inter, SIL Open Font License (fichiers de licence dans `src/assets/fonts/`).
-- Illustrations : dessins originaux générés par `scripts/build-illus.mjs`.
+- Logos clients : fichiers fournis par IMD Transport ; autorisations d'usage de marque à conserver dans `docs/autorisations.md`.

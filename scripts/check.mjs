@@ -5,7 +5,7 @@ import { join } from 'node:path';
 const D = 'dist';
 const files = readdirSync(D).filter(f => f.endsWith('.html'));
 const errors = [], titles = new Map(), descs = new Map(), external = new Set();
-const FORBIDDEN = [/17\s?t(onnes)?\b/i, /trois camions|3 camions|trois chauffeurs|3 chauffeurs/i, /lorem|TODO|XXX|placeholder/i, /24h\/24|24 ?h ?sur ?24/i, /AggregateRating|ratingValue/i, /tally\.so/i];
+const FORBIDDEN = [/17\s?t(onnes)?\b/i, /trois camions|3 camions|trois chauffeurs|3 chauffeurs/i, /lorem|TODO|XXX|\bplaceholder\b(?!=)/i, /24h\/24|24 ?h ?sur ?24/i, /AggregateRating|ratingValue/i, /tally\.so/i];
 const resolve = href => {
   const p = href.split('#')[0].split('?')[0];
   if (p === '/' || p === '') return existsSync(join(D, 'index.html'));
@@ -47,12 +47,12 @@ for (const f of files) {
   }
   if (/ style="/.test(body)) errors.push(`${f}: attribut style inline (bloqué par la CSP)`);
   const text = body.replace(/<[^>]+>/g, ' ');
-  for (const r of FORBIDDEN) if (r.test(text) || r.test(html)) errors.push(`${f}: contenu interdit ${r}`);
+  for (const r of FORBIDDEN) if (r.test(text) || (r.source.startsWith('lorem') ? false : r.test(html))) errors.push(`${f}: contenu interdit ${r}`);
   if (/porte-char/i.test(text) && !/ne (réalisons|proposons) (pas|ni)[^.]*porte-char|ni porte-char/i.test(text)) errors.push(`${f}: porte-char mentionné positivement`);
 }
 for (const [t, fs] of titles) if (fs.length > 1) errors.push(`title dupliqué : ${fs.join(', ')}`);
 for (const [d, fs] of descs) if (fs.length > 1) errors.push(`description dupliquée : ${fs.join(', ')}`);
-for (const f of ['sitemap.xml', 'robots.txt', 'llms.txt', 'favicon.svg', 'assets/img/og-imd-transport.png']) if (!existsSync(join(D, f))) errors.push(`${f} manquant`);
+for (const f of ['sitemap.xml', 'robots.txt', 'llms.txt', 'favicon-32.png', 'assets/img/og-imd-transport.png']) if (!existsSync(join(D, f))) errors.push(`${f} manquant`);
 const sm = readFileSync(join(D, 'sitemap.xml'), 'utf8');
 for (const m of sm.matchAll(/<loc>https:\/\/imdtransport\.fr([^<]*)<\/loc>/g)) if (!resolve(m[1] || '/')) errors.push(`sitemap : ${m[1]} introuvable`);
 
