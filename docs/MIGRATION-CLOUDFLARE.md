@@ -21,7 +21,7 @@ Réalisé le 27/11/2026 dans le tableau de bord Cloudflare (session Chrome de Ya
 **Conflits pour IMD Transport : aucun.**
 - Le nom de projet Pages `imdtransport` est libre dans ce compte (aucun projet existant). Le sous-domaine `imdtransport.pages.dev` étant global à Cloudflare, sa disponibilité ne se vérifie qu'à la création ; s'il est pris, Cloudflare ajoute un suffixe, sans incidence sur le domaine final.
 - Ajouter la zone `imdtransport.fr` n'interagit pas avec `bloomly.fr` : zones, DNS et règles sont isolés par domaine. Bloomly (Vercel + Email Routing) reste intact.
-- Tout reste dans l'offre gratuite ; sans mode de paiement, aucune dépense ne peut être engagée par erreur.
+- Tout reste dans l'offre gratuite : aucun service payant ni moyen de paiement constaté lors de l'audit.
 
 ## 2. Compatibilité avec l'offre gratuite
 
@@ -37,7 +37,7 @@ Le site est 100 % statique (aucune fonction serveur) : aucune consommation Worke
 
 ## 3. Ce qui est déjà prêt dans la branche `feat/cloudflare-pages`
 
-- `build.mjs` génère `dist/_headers` et `dist/_redirects` **depuis `vercel.json`** (source unique : en-têtes de sécurité, CSP avec `data.geopf.fr`, cache, 6 redirections 301). Ces fichiers ne sont produits que pour un build Cloudflare (`CF_PAGES=1`), pas sur Vercel.
+- `build.mjs` génère `dist/_headers` et `dist/_redirects` **depuis `vercel.json`** (source unique : en-têtes de sécurité, CSP avec `data.geopf.fr`, cache, 6 redirections 301). Ces fichiers ne sont produits que si `CF_PAGES=1` (variable fournie automatiquement par Cloudflare Pages lors de ses builds) ou `IMD_CF=1` (variable locale, pour reproduire un build Cloudflare sur sa machine) ; jamais sur Vercel. Les deux sont prises en charge par la même condition dans `build.mjs`. Le mode preview (noindex) dépend lui de `CF_PAGES_BRANCH`, que seul Cloudflare fournit : un build local `IMD_CF=1` produit donc la version de production (sauf ajout de `IMD_PREVIEW=1`).
 - Détection des previews Cloudflare : toute branche autre que `main` (`CF_PAGES_BRANCH`) → `noindex, nofollow`, `robots.txt` bloquant et en-tête `X-Robots-Tag: noindex`.
 - Testé avec l'émulateur officiel `wrangler pages dev` : URL propres (`/page.html` et `/page/` → 308 vers `/page`), 6 redirections 301, page 404 avec statut 404, tous les en-têtes de sécurité et de cache, CSP réelle (API IGN autorisée, tout autre domaine bloqué), 57 tests de parcours + 61 tests d'autocomplétion, axe-core 0 violation, aucun débordement.
 
@@ -66,8 +66,8 @@ Avant la bascule, relever **tous** les enregistrements DNS actuels chez Hostinge
 6. Fusionner `feat/cloudflare-pages` dans `main` → build de production Pages.
 7. Pages → Domaines personnalisés : `imdtransport.fr` et `www.imdtransport.fr`.
 8. Redirection `www` → apex : règle de redirection de zone (Redirect Rules, incluses dans l'offre Free), car `_redirects` ne gère pas les redirections de domaine.
-9. Chez Hostinger : remplacer les serveurs de noms par ceux indiqués par Cloudflare. Propagation : quelques minutes à 48 h ; le site reste servi par Vercel ou Cloudflare pendant la transition (même contenu).
-10. Contrôles : accueil, pages prestations, redirections, `robots.txt`, `sitemap.xml`, en-têtes, formulaire, certificat HTTPS.
+9. Chez Hostinger : remplacer les serveurs de noms par ceux indiqués par Cloudflare. Propagation : quelques minutes à 48 h. **Objectif : aucune coupure**, à contrôler et non garanti : pendant la transition, les visiteurs sont servis par Vercel ou par Cloudflare (même contenu), à condition que les domaines personnalisés Pages soient actifs et que les certificats HTTPS soient émis côté Cloudflare. Vérifier leur statut dans Pages → Domaines personnalisés avant et après le changement.
+10. Contrôles : statut « Actif » des deux domaines personnalisés et certificats HTTPS valides (apex et `www`), puis accueil, pages prestations, redirections, `robots.txt`, `sitemap.xml`, en-têtes, formulaire, certificat HTTPS.
 
 **Phase 4 — Après bascule**
 11. Garder le projet Vercel actif 2 semaines pour un retour arrière. **Retour arrière rapide** : dans la zone Cloudflare, remplacer les enregistrements apex et `www` (domaines personnalisés Pages) par les valeurs Vercel relevées dans l'export (A `76.76.21.21` / CNAME `cname.vercel-dns.com`, à confirmer à la bascule), effet en quelques minutes. Revenir aux serveurs de noms Hostinger reste possible mais impose une nouvelle propagation (jusqu'à 48 h) : dernier recours. Supprimer le projet Vercel seulement après ces 2 semaines.
