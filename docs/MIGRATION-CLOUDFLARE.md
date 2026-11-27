@@ -2,23 +2,26 @@
 
 **Statut : préparation uniquement.** Branche `feat/cloudflare-pages` (issue de `feat/imd-website-redesign`). Aucune modification DNS, aucun projet Cloudflare créé, aucune fusion dans `main`, aucune dépense.
 
-## 1. Audit du compte Cloudflare (lecture seule, partiel)
+## 1. Audit du compte Cloudflare (lecture seule, complet)
 
-Réalisé avec le connecteur « Cloudflare Developer Platform » déjà relié à Claude (connecteur signalé comme obsolète par Cloudflare au profit de `https://mcp.cloudflare.com/mcp`).
+Réalisé le 27/11/2026 dans le tableau de bord Cloudflare (session Chrome de Yann, consultation uniquement : aucun clic de création, modification ou suppression), complété par le connecteur « Cloudflare Developer Platform » pour les ressources Workers.
 
 | Élément | Résultat |
 |---|---|
-| Workers | 0 |
-| KV | 0 namespace |
-| D1 | 0 base |
-| Hyperdrive | 0 configuration |
-| R2 | non activé sur le compte (donc aucune facturation R2) |
-| Domaines (zones) | **non visible** avec ce connecteur |
-| Projets Pages | **non visible** |
-| Abonnements / facturation | **non visible** |
-| Compte concerné | **non identifiable** (pas d'outil de liste des comptes dans ce connecteur) |
+| Comptes accessibles | 1 : « Yann.tondon@gmail.com's Account » (ID `02de78bf7e23f7d7ce917c82bdfe2a6c`) |
+| Abonnements | **Workers Free** (actif) + zone `bloomly.fr` en **Free Plan** (actif) |
+| Services payants | **aucun** ; aucun mode de paiement enregistré (donc aucune facturation possible en l'état) |
+| Zones (domaines) | 1 seule : `bloomly.fr` (active, offre Free). **`imdtransport.fr` absent** |
+| Zone `bloomly.fr` | 10 enregistrements DNS, tous « DNS uniquement » : site servi par **Vercel** (CNAME apex + www), e-mail via **Cloudflare Email Routing** (MX/SPF/DKIM), vérifications TikTok et Vercel |
+| Règles de redirection / Page Rules (`bloomly.fr`) | aucune règle créée (seuls les modèles proposés s'affichent) |
+| Projets Workers & Pages | **aucun** (« No projects found ») |
+| Workers, KV, D1, Hyperdrive | 0 |
+| R2 | non activé |
 
-Conclusion provisoire : aucune application Workers, base ni stockage n'existe sur le compte relié ; rien ne risque d'être perturbé côté Developer Platform. Pour compléter (zones, Pages, abonnements), relier le serveur MCP officiel `https://mcp.cloudflare.com/mcp` (OAuth), puis relancer l'audit.
+**Conflits pour IMD Transport : aucun.**
+- Le nom de projet Pages `imdtransport` est libre dans ce compte (aucun projet existant). Le sous-domaine `imdtransport.pages.dev` étant global à Cloudflare, sa disponibilité ne se vérifie qu'à la création ; s'il est pris, Cloudflare ajoute un suffixe, sans incidence sur le domaine final.
+- Ajouter la zone `imdtransport.fr` n'interagit pas avec `bloomly.fr` : zones, DNS et règles sont isolés par domaine. Bloomly (Vercel + Email Routing) reste intact.
+- Tout reste dans l'offre gratuite ; sans mode de paiement, aucune dépense ne peut être engagée par erreur.
 
 ## 2. Compatibilité avec l'offre gratuite
 
