@@ -45,11 +45,13 @@ Le site est 100 % statique (aucune fonction serveur) : aucune consommation Worke
 
 Pour servir l'**apex** `imdtransport.fr` depuis Pages, le domaine doit devenir une zone Cloudflare, donc **changer les serveurs de noms chez Hostinger** vers ceux de Cloudflare (offre DNS gratuite). Sans ce changement, seul un sous-domaine (`www`) pourrait pointer vers Pages par CNAME. → Modification DNS soumise à votre validation.
 
-Avant la bascule, relever **tous** les enregistrements DNS actuels chez Hostinger (A/CNAME Vercel, `www`, TXT de vérification Google/Search Console, éventuels MX ou SPF) pour les recréer à l'identique dans la zone Cloudflare.
+**Même compte obligatoire** : la zone `imdtransport.fr` et le projet Pages doivent être créés dans le **même** compte Cloudflare, ici le seul compte existant (« Yann.tondon@gmail.com's Account »).
+
+Avant la bascule, relever **tous** les enregistrements DNS actuels chez Hostinger (A/CNAME Vercel, `www`, TXT de vérification Google/Search Console, éventuels MX ou SPF) pour les recréer à l'identique dans la zone Cloudflare. **Conserver un export complet** (fichier de zone Hostinger ou capture de chaque enregistrement) : l'import automatique de Cloudflare peut en manquer, et chaque enregistrement importé doit être comparé à cet export avant le changement de serveurs de noms.
 
 ## 5. Plan de migration
 
-**Phase 0 — Décisions (vous)** : valider Cloudflare Pages ; relier le MCP officiel et terminer l'audit ; confirmer le compte Cloudflare cible.
+**Phase 0 — Décisions (vous)** : valider Cloudflare Pages ; audit terminé le 27/11/2026 (compte unique, aucun conflit) ; compte cible confirmé.
 
 **Phase 1 — Projet Pages (aucun impact production)**
 1. Workers & Pages → Créer → Pages → connecter GitHub, dépôt `yannto-blip/IMDTRANSPORT` (autoriser l'application Cloudflare sur ce seul dépôt).
@@ -58,7 +60,7 @@ Avant la bascule, relever **tous** les enregistrements DNS actuels chez Hostinge
 4. Tester la preview de `feat/cloudflare-pages` sur mobile et ordinateur (formulaire WhatsApp/e-mail, autocomplétion IGN, en-têtes).
 
 **Phase 2 — Zone DNS préparée (aucun impact tant que les NS ne changent pas)**
-5. Ajouter `imdtransport.fr` comme zone (offre Free), importer/recréer les enregistrements relevés chez Hostinger, sans activer.
+5. Ajouter `imdtransport.fr` comme zone (offre Free) dans le même compte que le projet Pages, importer les enregistrements, puis les comparer un par un à l'export Hostinger et compléter les manquants, sans activer.
 
 **Phase 3 — Bascule (sur validation explicite, créneau calme)**
 6. Fusionner `feat/cloudflare-pages` dans `main` → build de production Pages.
@@ -68,12 +70,14 @@ Avant la bascule, relever **tous** les enregistrements DNS actuels chez Hostinge
 10. Contrôles : accueil, pages prestations, redirections, `robots.txt`, `sitemap.xml`, en-têtes, formulaire, certificat HTTPS.
 
 **Phase 4 — Après bascule**
-11. Garder le projet Vercel 2 semaines pour retour arrière (rétablir les NS Hostinger), puis le supprimer.
+11. Garder le projet Vercel actif 2 semaines pour un retour arrière. **Retour arrière rapide** : dans la zone Cloudflare, remplacer les enregistrements apex et `www` (domaines personnalisés Pages) par les valeurs Vercel relevées dans l'export (A `76.76.21.21` / CNAME `cname.vercel-dns.com`, à confirmer à la bascule), effet en quelques minutes. Revenir aux serveurs de noms Hostinger reste possible mais impose une nouvelle propagation (jusqu'à 48 h) : dernier recours. Supprimer le projet Vercel seulement après ces 2 semaines.
 12. Search Console : propriété domaine (TXT dans la zone Cloudflare), soumission du sitemap.
 
 **Référencement préservé** : mêmes URL, mêmes canonicals, même sitemap, mêmes 301 ; pas de changement de domaine.
 
-**Coût prévu : 0 €** (Pages Free + DNS Free).
+**Coût prévu : 0 €** pour Pages et DNS (offres Free). L'audit du 27/11/2026 confirme qu'aucun abonnement payant ni moyen de paiement n'existe sur le compte cible ; à revérifier juste avant la bascule.
+
+**Vérification indépendante des tests** : les résultats de la section 3 se reproduisent depuis la branche avec `IMD_CF=1 node build.mjs`, `npx wrangler pages dev dist`, puis `python3 scripts/interact.py http://localhost:8788 <chemin vers axe.min.js>` et `python3 scripts/test_autocomplete.py http://localhost:8788 <chemin vers axe.min.js>` (Playwright requis).
 
 ## 6. Annexe — intégration Cloudflare pour Claude Code et Codex (à lancer sur le Mac)
 
