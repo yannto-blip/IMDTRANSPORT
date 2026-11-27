@@ -174,6 +174,16 @@
       "alt": "Porteur plateau chargé de matériel de chantier sur un site logistique",
       "label": "Photo — livraison sur chantier",
       "illustrative": true
+    },
+    "equipe": {
+      "src": "/assets/img/photos/equipe-960.webp",
+      "src480": "/assets/img/photos/equipe-480.webp",
+      "w": 960,
+      "h": 1200,
+      "alt": "Chauffeur d'IMD Transport en gilet haute visibilité, posant à côté d'une nacelle sanglée sur un plateau",
+      "label": "Photo — l'équipe IMD Transport",
+      "illustrative": false,
+      "_comment": "Photographie authentique transmise par le dirigeant le 27/11/2026 : seulement recadrée en 4:5 et compressée, sans retouche."
     }
   },
   "analytics": {

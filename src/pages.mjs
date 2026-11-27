@@ -104,7 +104,18 @@ const safetySection = () => `
     <ul class="safety-grid">
       ${SAFETY.map(([ic, t, d]) => `<li><span class="safety-ic">${PICTO[ic]}</span><h3 class="h4">${t}</h3><p>${d}</p></li>`).join('')}
     </ul>
-    <p class="safety-sign">Chaque transport. Chaque chantier. La même exigence.</p>
+    <div class="team">
+      <figure class="team-photo">
+        <img src="${site.images.equipe.src}" srcset="${site.images.equipe.src480} 480w, ${site.images.equipe.src} 960w" sizes="(min-width: 1000px) 460px, (min-width: 640px) 60vw, 100vw" width="960" height="1200" alt="${esc(site.images.equipe.alt)}" loading="lazy" decoding="async">
+      </figure>
+      <div class="team-txt">
+        <h3 class="h2 team-h">Derrière chaque transport, des femmes et des hommes engagés.</h3>
+        <p>Chez IMD Transport, nous sommes convaincus qu'un transport réussi repose avant tout sur le professionnalisme de nos équipes.</p>
+        <p>Nos chauffeurs sont régulièrement sensibilisés à la sécurité et aux risques liés aux interventions sur chantier.</p>
+        <p>Réactivité, rigueur et proximité sont au cœur de notre engagement auprès de nos clients.</p>
+        <p class="safety-sign">Chaque transport. Chaque chantier. La même exigence.</p>
+      </div>
+    </div>
   </div>
 </section>`;
 const reassure = () => `

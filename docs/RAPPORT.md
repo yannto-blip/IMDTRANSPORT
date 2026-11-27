@@ -1,5 +1,11 @@
 # Rapport — refonte imdtransport.fr
 
+## Recette validée — préparation de la mise en production (27/11/2026)
+
+Le dirigeant a validé le site. Ajout d'un bloc équipe dans la section sécurité de l'accueil : photo authentique d'un chauffeur (recadrage 4:5, WebP 480/960 px, 44 et 154 Ko, aucune retouche), titre « Derrière chaque transport, des femmes et des hommes engagés. », texte fourni, signature conservée (une seule occurrence). Aucun nom ni qualification ajouté. Photo à gauche sur ordinateur, au-dessus du texte sur mobile. Tests : contrôle automatique ✓, 12 pages × 6 largeurs ✓, 57 + 61 tests de parcours ✓, axe-core 0 violation ✓, Lighthouse accueil 99/100/100/100 (LCP 0,9 s). Build de production vérifié localement (pages indexables, robots.txt et sitemap de production). Pull request vers `main` ouverte, non fusionnée — voir `docs/MISE-EN-PRODUCTION.md`.
+
+Bloquants avant publication : hébergement (plan Vercel), droit à l'image du chauffeur, mentions légales (n° registre transporteurs), accords des 4 logos clients.
+
 ## État pour la recette (24/11/2026, 21 h)
 
 Branche `feat/imd-website-redesign` uniquement. `main` et la production imdtransport.fr inchangées (dernier déploiement de production : 16/04/2026, ancien site). Aucun DNS modifié, aucune dépense.
