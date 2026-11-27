@@ -112,3 +112,22 @@ Lors de l'autorisation OAuth, ne sélectionner que le compte Cloudflare concern�
 - **Contrôles effectués sur la preview** : 12 pages principales en 200 avec `noindex, nofollow` et `X-Robots-Tag: noindex` ; `robots.txt` = `Disallow: /` ; page inexistante en 404 ; 6 anciennes URL redirigées vers la bonne cible ; `/page.html` → URL propre ; `_headers` et `_redirects` non publics (404) ; cache immuable CSS/JS, 7 jours images ; canonicals vers `https://imdtransport.fr` ; autocomplétion IGN réelle (2 requêtes acceptées par la CSP, coordonnées GPS récupérées) ; formulaire : URL `wa.me` et `mailto:imdtransport92@gmail.com` construites avec liens Google Maps (ouverture interceptée, rien envoyé).
 - **Non vérifié** : code exact des redirections (301) — le navigateur suit la redirection sans exposer le code, mais les 6 règles sont déclarées en 301 et reconnues par Cloudflare ; affichage sur un vrai téléphone ; envoi réel WhatsApp/e-mail.
 - **À savoir** : les déploiements automatiques sont actifs pour toutes les branches ; chaque push sur une branche `feat/*` crée une preview Cloudflare non indexée. La nouvelle adresse `pages.dev` a mis quelques minutes à devenir joignable.
+
+## 8. Relevé DNS de `imdtransport.fr` (27/11/2026, lecture seule)
+
+**Le domaine n'est pas dans le compte Hostinger connecté** (qui contient villanawal.com, stravion.fr, bloomly.fr, ainboxstockage.fr). Registre public (RDAP Afnic) : bureau d'enregistrement **Hostinger operations UAB**, créé le 24/11/2026, expire le 24/11/2029, statut actif (période d'ajout). Il est donc géré depuis **un autre compte Hostinger**, auquel il faut accéder pour l'export officiel de la zone.
+
+Relevé public (Google Public DNS), non exhaustif : un sous-domaine non interrogé ne peut pas être découvert de l'extérieur.
+
+| Type | Nom | Valeur | Priorité | TTL |
+|---|---|---|---|---|
+| NS | imdtransport.fr | lunar.dns-parking.com | — | 86400 (≈21591 restant en cache) |
+| NS | imdtransport.fr | solar.dns-parking.com | — | 86400 (idem) |
+| SOA | imdtransport.fr | lunar.dns-parking.com dns.hostinger.com, série 2026112601 | — | 3600 |
+| A | imdtransport.fr | 216.198.79.1 (Vercel) | — | 300 |
+| CNAME | www.imdtransport.fr | 435b8d08864d0002.vercel-dns-017.com (Vercel) | — | 300 |
+
+Absents : AAAA, MX (aucune messagerie sur le domaine), TXT (ni SPF, ni vérification Search Console, ni `_vercel`), CAA, `_dmarc`, `mail`, `ftp`, `autodiscover`.
+**DNSSEC : désactivé** (aucun DS chez l'Afnic, aucune DNSKEY).
+
+Conséquences pour la phase 2 : zone très simple (2 enregistrements utiles), aucun e-mail à préserver ; DNSSEC désactivé, donc rien à désactiver avant le changement de serveurs de noms ; les TTL de 300 s permettent un retour arrière rapide. Reste à confirmer, depuis le compte Hostinger titulaire, qu'aucun autre enregistrement n'existe.
