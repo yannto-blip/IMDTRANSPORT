@@ -11,7 +11,7 @@ axe = open(axe_path).read()
 with sync_playwright() as p:
     b = p.chromium.launch(executable_path='/usr/bin/google-chrome')
     # --- Mobile
-    ctx = b.new_context(viewport={'width': 375, 'height': 740}, is_mobile=True, has_touch=True)
+    ctx = b.new_context(bypass_csp=True, viewport={'width': 375, 'height': 740}, is_mobile=True, has_touch=True)
     pg = ctx.new_page(); pg.goto(base + '/')
     bar = pg.locator('.mobile-bar'); ok(bar.is_visible(), 'Barre contact mobile visible')
     bb = bar.bounding_box(); ok(bb['y'] + bb['height'] <= 740 + 1, f'Barre ancrée en bas (y={bb["y"]:.0f})')
@@ -28,10 +28,10 @@ with sync_playwright() as p:
     pg.locator('.dep[data-code="77"]').scroll_into_view_if_needed()
     pg.locator('.dep[data-code="77"]').tap(); pg.wait_for_timeout(150)
     ok('seine-et-marne' in pg.locator('[data-map-info]').inner_text().lower() and pg.url.endswith('/'), 'Carte : 1er appui affiche le nom sans naviguer')
-    pg.locator('.dep[data-code="77"]').tap(); pg.wait_for_url('**/zones-intervention**', timeout=5000); ok('zones-intervention' in pg.url, f'Carte : 2e appui ouvre la fiche ({pg.url.split("4173")[1]})')
+    pg.locator('.dep[data-code="77"]').tap(); pg.wait_for_url('**/zones-intervention**', timeout=5000); ok('zones-intervention' in pg.url, f'Carte : 2e appui ouvre la fiche ({pg.url.replace(base, "")})')
     ctx.close()
     # --- Desktop
-    ctx = b.new_context(viewport={'width': 1440, 'height': 900})
+    ctx = b.new_context(bypass_csp=True, viewport={'width': 1440, 'height': 900})
     pg = ctx.new_page(); pg.goto(base + '/')
     ok(not pg.locator('.mobile-bar').is_visible(), 'Desktop : barre mobile masquée')
     ok(pg.locator('.site-header .btn-call').is_visible() and pg.locator('.site-header .btn-wa').is_visible(), 'Desktop : CTA Appeler + WhatsApp dans le header')
@@ -62,7 +62,7 @@ with sync_playwright() as p:
         pg.fill('#qf-from', 'Évry-Courcouronnes (91)'); pg.fill('#qf-to', "Saint-Ouen-l'Aumône, 95"); pg.fill('#qf-date', '2026-12-15')
         pg.fill('#qf-name', 'Société Él€ctro Bâtiment'); pg.fill('#qf-phone', '06 12 34 56 78')
         pg.fill('#qf-info', 'Accès par rue étroite.\nLivraison avant 7h — merci !')
-    for label, cx in (('ordinateur', ctx), ('mobile', b.new_context(viewport={'width': 390, 'height': 800}, is_mobile=True, has_touch=True))):
+    for label, cx in (('ordinateur', ctx), ('mobile', b.new_context(bypass_csp=True, viewport={'width': 390, 'height': 800}, is_mobile=True, has_touch=True))):
         cx.grant_permissions(['clipboard-read', 'clipboard-write'], origin=base)
         pg = cx.new_page(); pg.goto(base + '/transport-mini-pelle'); pg.evaluate(STUB)
         click = (lambda sel: pg.tap(sel)) if label == 'mobile' else (lambda sel: pg.click(sel))

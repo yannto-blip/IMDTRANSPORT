@@ -8,7 +8,8 @@ import { pages } from './src/pages.mjs';
 
 const OUT = 'dist';
 // Prévisualisations Vercel (VERCEL_ENV=preview) : noindex partout + robots.txt bloquant.
-const IS_PREVIEW = process.env.VERCEL_ENV === 'preview' || process.env.IMD_PREVIEW === '1';
+const IS_PREVIEW = process.env.VERCEL_ENV === 'preview' || process.env.IMD_PREVIEW === '1'
+  || (process.env.CF_PAGES === '1' && process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'main');
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
@@ -123,6 +124,17 @@ writeFileSync(join(OUT, 'llms.txt'), `# ${site.name}
 ## Pages
 ${pages.filter(p => !p.noindex && !['/mentions-legales', '/politique-confidentialite'].includes(p.path)).map(p => `- [${p.h1}](${site.url}${p.path === '/' ? '/' : p.path}) : ${p.description}`).join('\n')}
 `);
+
+// 4 bis. Cloudflare Pages : _headers et _redirects générés depuis vercel.json (source unique)
+const vc = JSON.parse(readFileSync('vercel.json', 'utf8'));
+if (process.env.CF_PAGES === '1' || process.env.IMD_CF === '1') {
+const toPagesPath = src => src.replace('/(.*)', '/*');
+writeFileSync(join(OUT, '_redirects'), '# Généré par build.mjs depuis vercel.json — ne pas modifier à la main\n'
+  + vc.redirects.map(r => `${r.source} ${r.destination} ${r.permanent ? 301 : 302}`).join('\n') + '\n');
+writeFileSync(join(OUT, '_headers'), '# Généré par build.mjs depuis vercel.json — ne pas modifier à la main\n'
+  + vc.headers.map(h => `${toPagesPath(h.source)}\n` + h.headers.map(x => `  ${x.key}: ${x.value}`).join('\n')).join('\n')
+  + (IS_PREVIEW ? '\n/*\n  X-Robots-Tag: noindex\n' : '\n'));
+}
 
 // 5. Rapport
 const size = dir => readdirSync(dir).reduce((s, f) => { const st = statSync(join(dir, f)); return s + (st.isDirectory() ? size(join(dir, f)) : st.size); }, 0);

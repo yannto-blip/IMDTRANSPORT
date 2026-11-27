@@ -24,7 +24,7 @@ SAMPLES = {
 with sync_playwright() as p:
     b = p.chromium.launch(executable_path='/usr/bin/google-chrome')
     for label, opts in (('ordinateur', {'viewport': {'width': 1440, 'height': 900}}), ('mobile', {'viewport': {'width': 390, 'height': 800}, 'is_mobile': True, 'has_touch': True})):
-        cx = b.new_context(**opts)
+        cx = b.new_context(bypass_csp=True, **opts)
         cx.grant_permissions(['clipboard-read', 'clipboard-write'], origin=base)
         state = {'reqs': [], 'mode': 'ok', 'delay': {}}
         def handler(route):
