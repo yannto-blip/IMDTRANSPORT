@@ -1,6 +1,6 @@
 # Migration Vercel → Cloudflare Pages — plan (27/11/2026)
 
-**Statut : préparation uniquement.** Branche `feat/cloudflare-pages` (issue de `feat/imd-website-redesign`). Aucune modification DNS, aucun projet Cloudflare créé, aucune fusion dans `main`, aucune dépense.
+**Statut : phase 1 réalisée le 27/11/2026 (projet Pages + preview). Phases 2 à 4 non autorisées.** Branche `feat/cloudflare-pages` (issue de `feat/imd-website-redesign`). Aucune zone DNS, aucun domaine personnalisé, aucune fusion dans `main`, aucune dépense.
 
 ## 1. Audit du compte Cloudflare (lecture seule, complet)
 
@@ -101,3 +101,14 @@ codex mcp login cloudflare
 ```
 
 Lors de l'autorisation OAuth, ne sélectionner que le compte Cloudflare concerné. Les skills Cloudflare pourront être ajoutés plus tard, un par un et au niveau du projet, si un besoin réel apparaît.
+
+## 7. Compte rendu de la phase 1 (27/11/2026)
+
+- **Projet** : `imdtransport` (compte `02de78bf7e23f7d7ce917c82bdfe2a6c`), relié à `yannto-blip/IMDTRANSPORT`. Application GitHub « Cloudflare Workers and Pages » installée en **Only select repositories** : ce seul dépôt.
+- **Configuration** : branche de production `main`, aucun framework, `node build.mjs`, sortie `dist`, aucune variable.
+- **Build de production `main` (eea8162)** : échec attendu (`build.mjs` absent de l'ancien site sur `main`). Aucun impact : aucun domaine rattaché, `imdtransport.fr` reste sur Vercel.
+- **Preview `feat/cloudflare-pages`** : URL stable `https://feat-cloudflare-pages.imdtransport.pages.dev` (chaque commit a aussi son URL, ex. `https://12ef671f.imdtransport.pages.dev` pour 37edb83). Build réussi en 12 s, 13 pages, 6 redirections et 6 règles d'en-têtes reconnues.
+- **Anomalie trouvée et corrigée (commit 7bd0d6b)** : en preview, `_headers` contenait deux blocs `/*` ; Cloudflare n'a gardé que le second (noindex), donc CSP, HSTS, `X-Frame-Options` et `Permissions-Policy` manquaient. `build.mjs` fusionne désormais les règles par chemin. Vérifié après redéploiement : tous présents.
+- **Contrôles effectués sur la preview** : 12 pages principales en 200 avec `noindex, nofollow` et `X-Robots-Tag: noindex` ; `robots.txt` = `Disallow: /` ; page inexistante en 404 ; 6 anciennes URL redirigées vers la bonne cible ; `/page.html` → URL propre ; `_headers` et `_redirects` non publics (404) ; cache immuable CSS/JS, 7 jours images ; canonicals vers `https://imdtransport.fr` ; autocomplétion IGN réelle (2 requêtes acceptées par la CSP, coordonnées GPS récupérées) ; formulaire : URL `wa.me` et `mailto:imdtransport92@gmail.com` construites avec liens Google Maps (ouverture interceptée, rien envoyé).
+- **Non vérifié** : code exact des redirections (301) — le navigateur suit la redirection sans exposer le code, mais les 6 règles sont déclarées en 301 et reconnues par Cloudflare ; affichage sur un vrai téléphone ; envoi réel WhatsApp/e-mail.
+- **À savoir** : les déploiements automatiques sont actifs pour toutes les branches ; chaque push sur une branche `feat/*` crée une preview Cloudflare non indexée. La nouvelle adresse `pages.dev` a mis quelques minutes à devenir joignable.
