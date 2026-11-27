@@ -131,9 +131,16 @@ if (process.env.CF_PAGES === '1' || process.env.IMD_CF === '1') {
 const toPagesPath = src => src.replace('/(.*)', '/*');
 writeFileSync(join(OUT, '_redirects'), '# Généré par build.mjs depuis vercel.json — ne pas modifier à la main\n'
   + vc.redirects.map(r => `${r.source} ${r.destination} ${r.permanent ? 301 : 302}`).join('\n') + '\n');
+// Une seule règle par chemin : Cloudflare ne conserve que le dernier bloc d'un chemin répété
+// (constaté le 27/11/2026 : un 2e bloc « /* » effaçait CSP, HSTS, X-Frame-Options, Permissions-Policy).
+const hdrRules = new Map();
+for (const h of vc.headers) {
+  const path = toPagesPath(h.source);
+  hdrRules.set(path, [...(hdrRules.get(path) || []), ...h.headers.map(x => `${x.key}: ${x.value}`)]);
+}
+if (IS_PREVIEW) hdrRules.set('/*', [...(hdrRules.get('/*') || []), 'X-Robots-Tag: noindex']);
 writeFileSync(join(OUT, '_headers'), '# Généré par build.mjs depuis vercel.json — ne pas modifier à la main\n'
-  + vc.headers.map(h => `${toPagesPath(h.source)}\n` + h.headers.map(x => `  ${x.key}: ${x.value}`).join('\n')).join('\n')
-  + (IS_PREVIEW ? '\n/*\n  X-Robots-Tag: noindex\n' : '\n'));
+  + [...hdrRules].map(([path, lines]) => `${path}\n` + lines.map(l => `  ${l}`).join('\n')).join('\n') + '\n');
 }
 
 // 5. Rapport
