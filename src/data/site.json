@@ -1,0 +1,236 @@
+{
+  "_comment": "Fichier central : coordonnées, caractéristiques, références, images. Modifier ici puis relancer `node build.mjs`.",
+  "name": "IMD Transport",
+  "legalName": "IMD TRANSPORT",
+  "url": "https://imdtransport.fr",
+  "tagline": "Transport fiable, livraison garantie",
+  "baseCity": "Suresnes",
+  "basePostalCode": "92150",
+  "baseDepartment": "Hauts-de-Seine",
+  "contact": {
+    "phoneDisplay": "06 88 49 45 33",
+    "phoneE164": "+33688494533",
+    "phoneIntl": "+33 6 88 49 45 33",
+    "whatsapp": "33688494533",
+    "email": "imdtransport92@gmail.com"
+  },
+  "googleBusinessUrl": "",
+  "logo": {
+    "_comment": "Logo officiel (PDF Canva) converti en WebP/PNG transparent, sans modification du dessin ni des couleurs.",
+    "src": "/assets/img/logo-imd-transport.webp",
+    "src2x": "/assets/img/logo-imd-transport@2x.webp",
+    "png": "/assets/img/logo-imd-transport.png",
+    "width": 194,
+    "height": 112
+  },
+  "specs": {
+    "maxLoad": "jusqu'à 16 tonnes",
+    "maxLoadShort": "16 t",
+    "deckLength": "10 m",
+    "deckWidth": "2,48 m",
+    "deckArea": "24,8 m²",
+    "brands": "DAF et Iveco",
+    "equipment": [
+      "Rampes de chargement",
+      "Treuil"
+    ],
+    "noCrane": true,
+    "schedule": "De jour comme de nuit, du lundi au samedi, selon les disponibilités"
+  },
+  "references": [
+    {
+      "name": "Kiloutou",
+      "logo": "/assets/img/logos/kiloutou.webp",
+      "w": 693,
+      "h": 96,
+      "display": 22
+    },
+    {
+      "name": "Loxam",
+      "logo": "/assets/img/logos/loxam.webp",
+      "w": 633,
+      "h": 96,
+      "display": 24
+    },
+    {
+      "name": "Colas",
+      "logo": "/assets/img/logos/colas.webp",
+      "w": 296,
+      "h": 96,
+      "display": 40
+    },
+    {
+      "name": "Bouygues Bâtiment",
+      "logo": "/assets/img/logos/bouygues-batiment.webp",
+      "w": 141,
+      "h": 96,
+      "display": 50
+    }
+  ],
+  "departments": [
+    {
+      "code": "75",
+      "name": "Paris",
+      "seat": "Paris"
+    },
+    {
+      "code": "77",
+      "name": "Seine-et-Marne",
+      "seat": "Melun"
+    },
+    {
+      "code": "78",
+      "name": "Yvelines",
+      "seat": "Versailles"
+    },
+    {
+      "code": "91",
+      "name": "Essonne",
+      "seat": "Évry-Courcouronnes"
+    },
+    {
+      "code": "92",
+      "name": "Hauts-de-Seine",
+      "seat": "Nanterre"
+    },
+    {
+      "code": "93",
+      "name": "Seine-Saint-Denis",
+      "seat": "Bobigny"
+    },
+    {
+      "code": "94",
+      "name": "Val-de-Marne",
+      "seat": "Créteil"
+    },
+    {
+      "code": "95",
+      "name": "Val-d'Oise",
+      "seat": "Cergy"
+    }
+  ],
+  "images": {
+    "_comment": "Visuels IA photoréalistes fournis le 24/11/2026 (illustrative=true → mention « Illustration non contractuelle »). Chaque photo existe en -800.webp et -1600.webp (srcset automatique). Remplacer par de vraies photos de la flotte dès que possible.",
+    "hero": {
+      "src": "/assets/img/photos/minipelle-1600.webp",
+      "w": 1600,
+      "h": 900,
+      "alt": "Poids lourd porteur plateau DAF blanc transportant une mini-pelle arrimée, rampes relevées, devant un chantier",
+      "label": "Photo hero — porteur plateau blanc chargé d'une mini-pelle",
+      "illustrative": true
+    },
+    "minipelle": {
+      "src": "/assets/img/photos/minipelle-1600.webp",
+      "w": 1600,
+      "h": 900,
+      "alt": "Mini-pelle arrimée par chaînes sur le plateau d'un porteur DAF blanc",
+      "label": "Photo — mini-pelle sur plateau",
+      "illustrative": true
+    },
+    "nacelle": {
+      "src": "/assets/img/photos/nacelle-1600.webp",
+      "w": 1600,
+      "h": 900,
+      "alt": "Nacelle élévatrice articulée orange sanglée sur le plateau d'un porteur Iveco blanc",
+      "label": "Photo — nacelle élévatrice sur plateau",
+      "illustrative": true
+    },
+    "compacteur": {
+      "src": "/assets/img/photos/compacteur-1600.webp",
+      "w": 1600,
+      "h": 900,
+      "alt": "Compacteur monocylindre sanglé sur le plateau d'un porteur DAF blanc",
+      "label": "Photo — compacteur sur plateau",
+      "illustrative": true
+    },
+    "materiel": {
+      "src": "/assets/img/photos/materiel-1600.webp",
+      "w": 1600,
+      "h": 900,
+      "alt": "Porteur plateau Iveco blanc chargé d'échafaudages et de poutres IPN sanglés",
+      "label": "Photo — échafaudages et poutres IPN",
+      "illustrative": true
+    },
+    "vehicule": {
+      "src": "/assets/img/photos/vehicule-1600.webp",
+      "w": 1600,
+      "h": 900,
+      "alt": "Fourgon utilitaire blanc sanglé sur le plateau d'un porteur DAF blanc",
+      "label": "Photo — véhicule utilitaire sur plateau",
+      "illustrative": true
+    },
+    "plateau": {
+      "src": "/assets/img/photos/plateau-1600.webp",
+      "w": 1600,
+      "h": 900,
+      "alt": "Porteur plateau Iveco blanc à vide : plateau long, treuil à l'avant, rampes arrière relevées",
+      "label": "Photo — plateau vide, rampes et treuil",
+      "illustrative": true
+    },
+    "pros": {
+      "src": "/assets/img/photos/materiel-1600.webp",
+      "w": 1600,
+      "h": 900,
+      "alt": "Porteur plateau chargé de matériel de chantier sur un site logistique",
+      "label": "Photo — livraison sur chantier",
+      "illustrative": true
+    },
+    "equipe": {
+      "src": "/assets/img/photos/equipe-960.webp",
+      "src480": "/assets/img/photos/equipe-480.webp",
+      "w": 960,
+      "h": 1200,
+      "alt": "Chauffeur d'IMD Transport en gilet haute visibilité, posant à côté d'une nacelle sanglée sur un plateau",
+      "label": "Photo — l'équipe IMD Transport",
+      "illustrative": false,
+      "_comment": "Photographie authentique transmise par le dirigeant le 27/11/2026 : seulement recadrée en 4:5 et compressée, sans retouche."
+    }
+  },
+  "analytics": {
+    "_comment": "Aucun traceur actif. Renseigner ga4Id puis enabled=true seulement après validation RGPD (bandeau de consentement requis).",
+    "enabled": false,
+    "ga4Id": "",
+    "googleAdsId": ""
+  },
+  "legal": {
+    "_comment": "Données issues des registres publics (via societe.com). À confirmer par le dirigeant avant mise en production.",
+    "form": "Société par actions simplifiée (SAS)",
+    "capital": "30 000 €",
+    "siren": "978 360 477",
+    "siret": "978 360 477 00019",
+    "rcs": "RCS Nanterre 978 360 477",
+    "vat": "FR56978360477",
+    "address": "20 allée des Jonquilles, 92150 Suresnes",
+    "president": "Messaouda Slama",
+    "naf": "49.41B — Transports routiers de fret de proximité",
+    "transportLicence": "",
+    "host": {
+      "name": "Vercel Inc.",
+      "address": "440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
+      "url": "https://vercel.com"
+    }
+  },
+  "_referencesNote": "Logos fournis par le client (fichiers transmis le 24/11/2026). Autorisation écrite d'usage de marque à obtenir auprès de chaque entreprise avant mise en production.",
+  "keyfigs": [
+    {
+      "value": "16 t",
+      "label": "Charge utile maximale",
+      "note": "Sous réserve de faisabilité"
+    },
+    {
+      "value": "10 m",
+      "label": "Longueur de plateau",
+      "note": "2,48 m de largeur utile"
+    },
+    {
+      "value": "Jour & nuit",
+      "label": "Transport sur demande",
+      "note": "Selon disponibilités"
+    },
+    {
+      "value": "6j/7",
+      "label": "Du lundi au samedi",
+      "note": "Transports planifiés"
+    }
+  ]
+}
